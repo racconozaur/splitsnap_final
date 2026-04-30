@@ -32,8 +32,11 @@ Reason: ${reason}`;
 
   // Generate Revolut payment link content
   // Revolut.me links support amount parameter
-  const revolutContent = paymentInfo.revolutTag
-    ? `https://revolut.me/${paymentInfo.revolutTag}?amount=${amount}&currency=CHF&message=${encodeURIComponent(reason)}`
+  const revolutLink = paymentInfo.revolutTag
+    ? buildRevolutPaymentLink(paymentInfo.revolutTag, amount, reason)
+    : '';
+  const revolutContent = revolutLink
+    ? revolutLink
     : `Pay ${payerName}
 ${formatCurrency(amount)}
 via Revolut
@@ -97,15 +100,17 @@ Reason: ${reason}`;
 
             <div className="text-center text-sm text-[#5d5d53]">
               <p className="font-semibold text-[#171717]">@{paymentInfo.revolutTag || 'No tag provided'}</p>
-              <p className="mt-1 text-[#5d5d53]">Scan to pay via Revolut</p>
-              {paymentInfo.revolutTag && (
+              <p className="mt-1 text-[#5d5d53]">
+                Opens Revolut with amount and reference where supported.
+              </p>
+              {revolutLink && (
                 <a
-                  href={`https://revolut.me/${paymentInfo.revolutTag}`}
+                  href={revolutLink}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="mt-2 inline-flex rounded-lg bg-[#171717] px-4 py-2 font-semibold text-white hover:bg-[#30302b]"
+                  className="mt-3 inline-flex w-full justify-center rounded-lg bg-[#171717] px-4 py-3 font-semibold text-white hover:bg-[#30302b]"
                 >
-                  Open Revolut Link
+                  Pay with Revolut
                 </a>
               )}
             </div>
@@ -157,4 +162,13 @@ Reason: ${reason}`;
       </p>
     </div>
   );
+}
+
+function buildRevolutPaymentLink(revolutTag: string, amount: number, message: string): string {
+  const cleanTag = revolutTag.trim().replace(/^@/, '');
+  const url = new URL(`https://revolut.me/${cleanTag}`);
+  url.searchParams.set('amount', amount.toFixed(2));
+  url.searchParams.set('currency', 'CHF');
+  url.searchParams.set('message', message);
+  return url.toString();
 }
