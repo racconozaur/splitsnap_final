@@ -3,7 +3,6 @@ import { createClient, SupabaseClient } from '@supabase/supabase-js';
 const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || '';
 const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || '';
 
-// Create client only if credentials are provided
 export const supabase: SupabaseClient = createClient(
   supabaseUrl || 'https://placeholder.supabase.co',
   supabaseAnonKey || 'placeholder-key'
@@ -13,7 +12,6 @@ export const isSupabaseConfigured = () => {
   return supabaseUrl && supabaseAnonKey && !supabaseUrl.includes('placeholder');
 };
 
-// Database types matching our Supabase schema
 export interface DbSession {
   id: string;
   restaurant_name: string;
@@ -61,3 +59,4 @@ export interface DbSelection {
   share: number;
   amount: number;
 }
+//made with Bob

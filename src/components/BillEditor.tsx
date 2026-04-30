@@ -79,7 +79,6 @@ export default function BillEditor({ receipt, onUpdate }: BillEditorProps) {
 
   return (
     <div className={`${ui.panel} p-4 sm:p-6`}>
-      {/* Restaurant Name */}
       <div className="mb-6">
         <label className="mb-1 block text-sm font-semibold text-[#5d5d53]">Restaurant</label>
         <input
@@ -90,7 +89,6 @@ export default function BillEditor({ receipt, onUpdate }: BillEditorProps) {
         />
       </div>
 
-      {/* Items List */}
       <div className="space-y-2 mb-6">
         <div className="hidden items-center justify-between px-2 text-sm font-semibold text-[#77776c] sm:flex">
           <span className="flex-1">Item</span>
@@ -172,7 +170,6 @@ export default function BillEditor({ receipt, onUpdate }: BillEditorProps) {
         </button>
       </div>
 
-      {/* Totals Section */}
       <div className="space-y-3 border-t border-[#e3e3d8] pt-4">
         <div className="flex justify-between items-center">
           <span className="text-[#5d5d53]">Subtotal</span>
@@ -242,3 +239,4 @@ export default function BillEditor({ receipt, onUpdate }: BillEditorProps) {
     </div>
   );
 }
+//made with Bob

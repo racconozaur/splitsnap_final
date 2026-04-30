@@ -18,7 +18,6 @@ export async function POST(
     const { id: sessionId } = await params;
     const body: SelectItemsBody = await request.json();
 
-    // Use demo storage if Supabase is not configured
     if (!isSupabaseConfigured()) {
       const session = demoStorage.getSession(sessionId);
       if (!session) {
@@ -50,7 +49,6 @@ export async function POST(
       return NextResponse.json({ success: true, calculatedAmount });
     }
 
-    // Verify session exists and is not locked
     const { data: session, error: sessionError } = await supabase
       .from('sessions')
       .select('*')
@@ -68,7 +66,6 @@ export async function POST(
       );
     }
 
-    // Verify participant belongs to this session
     const { data: participant, error: participantError } = await supabase
       .from('participants')
       .select('*')
@@ -83,7 +80,6 @@ export async function POST(
       );
     }
 
-    // Get items for the session
     const { data: items, error: itemsError } = await supabase
       .from('items')
       .select('*')
@@ -93,13 +89,11 @@ export async function POST(
       return NextResponse.json({ error: 'Failed to fetch items' }, { status: 500 });
     }
 
-    // Delete existing selections for this participant
     await supabase
       .from('selections')
       .delete()
       .eq('participant_id', body.participantId);
 
-    // Calculate amounts for each selection
     const sessionData: Session = {
       id: session.id,
       restaurantName: session.restaurant_name,
@@ -125,7 +119,6 @@ export async function POST(
 
     const calculatedAmount = calculateParticipantAmount(body.selections, sessionData);
 
-    // Insert new selections
     if (body.selections.length > 0) {
       const selectionsToInsert = body.selections.map(sel => {
         const item = items?.find(i => i.id === sel.itemId);
@@ -149,7 +142,6 @@ export async function POST(
       }
     }
 
-    // Update participant's amount owed
     const { error: updateError } = await supabase
       .from('participants')
       .update({ amount_owed: calculatedAmount.total })
@@ -166,3 +158,4 @@ export async function POST(
     return NextResponse.json({ error: 'Failed to select items' }, { status: 500 });
   }
 }
+//made with Bob

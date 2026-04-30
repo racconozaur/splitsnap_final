@@ -24,18 +24,6 @@
 .DS_Store
 *.pem
 
-# local AI assistant / agent files
-.claude/
-.codex/
-.agents/
-claude/
-codex/
-agents/
-CLAUDE.local.md
-AGENTS.local.md
-*.claude.md
-*.codex.md
-
 # debug
 npm-debug.log*
 yarn-debug.log*

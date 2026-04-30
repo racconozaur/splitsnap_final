@@ -8,3 +8,4 @@ export const ui = {
   secondaryButton: 'inline-flex items-center justify-center gap-2 rounded-lg border border-[#d8d8ce] bg-white px-6 py-3 font-semibold text-[#33332e] transition-colors hover:border-[#171717]',
   subtleButton: 'inline-flex items-center justify-center gap-2 rounded-lg bg-[#efefe7] px-4 py-2 text-sm font-semibold text-[#33332e] transition-colors hover:bg-[#e3e3d8]',
 };
+//made with Bob

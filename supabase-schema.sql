@@ -1,7 +1,4 @@
--- SplitSnap Database Schema for Supabase
--- Run this in your Supabase SQL Editor
 
--- Sessions table
 CREATE TABLE sessions (
   id TEXT PRIMARY KEY,
   restaurant_name TEXT NOT NULL,
@@ -17,7 +14,6 @@ CREATE TABLE sessions (
   created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
 );
 
--- Items table
 CREATE TABLE items (
   id TEXT PRIMARY KEY,
   session_id TEXT NOT NULL REFERENCES sessions(id) ON DELETE CASCADE,
@@ -29,7 +25,6 @@ CREATE TABLE items (
   created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
 );
 
--- Participants table
 CREATE TABLE participants (
   id TEXT PRIMARY KEY,
   session_id TEXT NOT NULL REFERENCES sessions(id) ON DELETE CASCADE,
@@ -39,7 +34,6 @@ CREATE TABLE participants (
   created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
 );
 
--- Selections table
 CREATE TABLE selections (
   id TEXT PRIMARY KEY,
   participant_id TEXT NOT NULL REFERENCES participants(id) ON DELETE CASCADE,
@@ -50,20 +44,16 @@ CREATE TABLE selections (
   UNIQUE(participant_id, item_id)
 );
 
--- Indexes for better query performance
 CREATE INDEX idx_items_session_id ON items(session_id);
 CREATE INDEX idx_participants_session_id ON participants(session_id);
 CREATE INDEX idx_selections_participant_id ON selections(participant_id);
 CREATE INDEX idx_selections_item_id ON selections(item_id);
 
--- Enable Row Level Security (RLS)
 ALTER TABLE sessions ENABLE ROW LEVEL SECURITY;
 ALTER TABLE items ENABLE ROW LEVEL SECURITY;
 ALTER TABLE participants ENABLE ROW LEVEL SECURITY;
 ALTER TABLE selections ENABLE ROW LEVEL SECURITY;
 
--- For hackathon MVP, allow all operations (no authentication)
--- In production, you'd want proper auth policies
 
 CREATE POLICY "Allow all operations on sessions" ON sessions
   FOR ALL USING (true) WITH CHECK (true);
@@ -77,8 +67,8 @@ CREATE POLICY "Allow all operations on participants" ON participants
 CREATE POLICY "Allow all operations on selections" ON selections
   FOR ALL USING (true) WITH CHECK (true);
 
--- Grant access to anon role
 GRANT ALL ON sessions TO anon;
 GRANT ALL ON items TO anon;
 GRANT ALL ON participants TO anon;
 GRANT ALL ON selections TO anon;
+-- made with Bob

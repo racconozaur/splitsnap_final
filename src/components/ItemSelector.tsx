@@ -21,7 +21,6 @@ export default function ItemSelector({
   onSelectionChange,
   isLocked,
 }: ItemSelectorProps) {
-  // Calculate how much of each item is already claimed by others
   const getItemClaims = (itemId: string) => {
     let totalShare = 0;
     const claimedBy: string[] = [];
@@ -46,10 +45,8 @@ export default function ItemSelector({
   const toggleItem = (itemId: string) => {
     const existing = getCurrentSelection(itemId);
     if (existing) {
-      // Remove selection
       onSelectionChange(selections.filter(s => s.itemId !== itemId));
     } else {
-      // Add full selection
       onSelectionChange([...selections, { itemId, share: 1.0 }]);
     }
   };
@@ -57,15 +54,12 @@ export default function ItemSelector({
   const setItemShare = (itemId: string, share: number) => {
     const existing = getCurrentSelection(itemId);
     if (share <= 0) {
-      // Remove selection if share is 0
       onSelectionChange(selections.filter(s => s.itemId !== itemId));
     } else if (existing) {
-      // Update existing selection
       onSelectionChange(
         selections.map(s => (s.itemId === itemId ? { ...s, share } : s))
       );
     } else {
-      // Add new selection
       onSelectionChange([...selections, { itemId, share }]);
     }
   };
@@ -93,7 +87,6 @@ export default function ItemSelector({
               isSelected ? 'border-[#0f766e] bg-[#eef7f2]' : 'border-[#e3e3d8] bg-white'
             } ${isLocked ? 'opacity-75' : ''}`}
           >
-            {/* Item Header */}
             <button
               onClick={() => !isLocked && toggleItem(item.id)}
               disabled={isLocked}
@@ -121,7 +114,6 @@ export default function ItemSelector({
               </span>
             </button>
 
-            {/* Claims info */}
             {claims.claimedBy.length > 0 && (
               <div className="px-3 pb-2">
                 <div className="flex items-center gap-1 text-xs text-[#5d5d53]">
@@ -131,7 +123,6 @@ export default function ItemSelector({
               </div>
             )}
 
-            {/* Share selector (shown when selected) */}
             {isSelected && !isLocked && (
               <div className="border-t border-[#d8d8ce] px-3 pb-3">
                 <p className="mb-2 mt-3 text-sm font-medium text-[#5d5d53]">How much did you have?</p>
@@ -151,7 +142,6 @@ export default function ItemSelector({
                   ))}
                 </div>
 
-                {/* Custom share input */}
                 <div className="mt-3 flex items-center gap-2">
                   <span className="text-sm text-[#5d5d53]">Custom:</span>
                   <input
@@ -165,7 +155,6 @@ export default function ItemSelector({
                   <span className="text-sm text-[#5d5d53]">%</span>
                 </div>
 
-                {/* Your share amount */}
                 <div className="mt-2 text-sm">
                   <span className="text-[#5d5d53]">Your share: </span>
                   <span className="font-semibold text-[#171717]">
@@ -173,7 +162,6 @@ export default function ItemSelector({
                   </span>
                 </div>
 
-                {/* Overclaimed warning */}
                 {isOverclaimed && (
                   <div className="mt-2 flex items-center gap-1 text-sm text-[#b57905]">
                     <AlertTriangle className="w-4 h-4" />
@@ -188,3 +176,4 @@ export default function ItemSelector({
     </div>
   );
 }
+//made with Bob

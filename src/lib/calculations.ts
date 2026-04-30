@@ -1,16 +1,11 @@
 import { ReceiptItem, ItemSelection, CalculatedAmount, Session, Participant } from '@/types';
 
-/**
- * Calculate the amount owed by a participant based on their selections
- * Tax, tip, and service fee are split proportionally based on items selected
- */
 export function calculateParticipantAmount(
   selections: ItemSelection[],
   session: Session
 ): CalculatedAmount {
   const { items, subtotal, tax, tip, serviceFee } = session;
 
-  // Calculate items total for this participant
   let itemsTotal = 0;
   for (const selection of selections) {
     const item = items.find(i => i.id === selection.itemId);
@@ -19,7 +14,6 @@ export function calculateParticipantAmount(
     }
   }
 
-  // Calculate proportional shares (based on ratio of items to subtotal)
   const proportion = subtotal > 0 ? itemsTotal / subtotal : 0;
 
   const taxShare = tax * proportion;
@@ -37,10 +31,6 @@ export function calculateParticipantAmount(
   };
 }
 
-/**
- * Calculate how much of each item has been claimed
- * Returns a map of itemId -> total share claimed (0-1, can exceed 1 if overclaimed)
- */
 export function calculateItemClaims(
   participants: Participant[]
 ): Map<string, { totalShare: number; claimedBy: string[] }> {
@@ -58,9 +48,6 @@ export function calculateItemClaims(
   return claims;
 }
 
-/**
- * Calculate unclaimed amount from the bill
- */
 export function calculateUnclaimedAmount(
   session: Session,
   participants: Participant[]
@@ -69,10 +56,6 @@ export function calculateUnclaimedAmount(
   return roundToTwoDecimals(session.total - totalClaimed);
 }
 
-/**
- * Validate that the receipt totals add up correctly
- * Returns difference between calculated and stated total
- */
 export function validateReceiptTotals(
   items: ReceiptItem[],
   subtotal: number,
@@ -86,15 +69,12 @@ export function validateReceiptTotals(
   const difference = Math.abs(calculatedTotal - total);
 
   return {
-    isValid: difference < 0.02, // Allow 2 cent rounding error
+    isValid: difference < 0.02,
     difference: roundToTwoDecimals(difference),
     calculatedTotal: roundToTwoDecimals(calculatedTotal),
   };
 }
 
-/**
- * Check for claim conflicts (same item claimed more than 100%)
- */
 export function checkClaimConflicts(
   participants: Participant[],
   items: ReceiptItem[]
@@ -103,7 +83,7 @@ export function checkClaimConflicts(
   const conflicts: Array<{ itemId: string; itemName: string; totalShare: number; claimedBy: string[] }> = [];
 
   claims.forEach((claim, itemId) => {
-    if (claim.totalShare > 1.01) { // Allow 1% tolerance
+    if (claim.totalShare > 1.01) {
       const item = items.find(i => i.id === itemId);
       conflicts.push({
         itemId,
@@ -117,9 +97,6 @@ export function checkClaimConflicts(
   return conflicts;
 }
 
-/**
- * Split remaining unclaimed amount equally among selected participants
- */
 export function splitUnclaimedEqually(
   unclaimedAmount: number,
   participantCount: number
@@ -128,23 +105,14 @@ export function splitUnclaimedEqually(
   return roundToTwoDecimals(unclaimedAmount / participantCount);
 }
 
-/**
- * Round a number to 2 decimal places
- */
 export function roundToTwoDecimals(num: number): number {
   return Math.round(num * 100) / 100;
 }
 
-/**
- * Format currency for display (CHF)
- */
 export function formatCurrency(amount: number): string {
   return `CHF ${amount.toFixed(2)}`;
 }
 
-/**
- * Generate a summary of the session for display
- */
 export function generateSessionSummary(
   session: Session,
   participants: Participant[]
@@ -164,3 +132,4 @@ export function generateSessionSummary(
     paidCount: participants.filter(p => p.paymentStatus === 'paid' || p.paymentStatus === 'confirmed').length,
   };
 }
+//made with Bob

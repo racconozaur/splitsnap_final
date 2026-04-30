@@ -83,7 +83,6 @@ export default function CreatePage() {
 
   return (
     <div className="min-h-screen bg-[#f7f7f2]">
-      {/* Header */}
       <header className="sticky top-0 z-10 border-b border-[#e3e3d8] bg-white/90 backdrop-blur">
         <div className="mx-auto flex max-w-3xl items-center justify-between px-4 py-3 sm:py-4">
           <Link href="/" className="flex min-w-0 items-center gap-2 text-sm font-semibold text-[#5d5d53] hover:text-[#171717]">
@@ -99,7 +98,6 @@ export default function CreatePage() {
           <div className="w-8 sm:w-16" />
         </div>
 
-        {/* Progress bar */}
         <div className="h-1 bg-[#d8d8ce]">
           <div
             className="h-full bg-[#0f766e] transition-all duration-300"
@@ -111,12 +109,10 @@ export default function CreatePage() {
       </header>
 
       <main className="mx-auto max-w-3xl px-3 py-5 sm:px-4 sm:py-8">
-        {/* Step 1: Scan */}
         {step === 'scan' && (
           <div>
             <ReceiptScanner onScanComplete={handleScanComplete} />
 
-            {/* Demo mode - skip scan */}
             <div className="mt-8 text-center">
               <button
                 onClick={() => {
@@ -145,7 +141,6 @@ export default function CreatePage() {
           </div>
         )}
 
-        {/* Step 2: Edit */}
         {step === 'edit' && receipt && (
           <div>
             <BillEditor receipt={receipt} onUpdate={setReceipt} />
@@ -162,12 +157,10 @@ export default function CreatePage() {
           </div>
         )}
 
-        {/* Step 3: Payment Info */}
         {step === 'payment' && (
           <div className={`${ui.panel} p-4 sm:p-6`}>
             <h2 className="mb-6 text-xl font-semibold text-[#171717]">Your details</h2>
 
-            {/* Payer name */}
             <div className="mb-6">
               <label className="mb-2 block text-sm font-semibold text-[#5d5d53]">
                 Your name *
@@ -181,7 +174,6 @@ export default function CreatePage() {
               />
             </div>
 
-            {/* Number of people */}
             <div className="mb-6">
               <label className="mb-2 block text-sm font-semibold text-[#5d5d53]">
                 Number of people
@@ -203,7 +195,6 @@ export default function CreatePage() {
               </div>
             </div>
 
-            {/* Preferred payment method */}
             <div className="mb-6">
               <label className="mb-2 block text-sm font-semibold text-[#5d5d53]">
                 Preferred payment method
@@ -225,7 +216,6 @@ export default function CreatePage() {
               </div>
             </div>
 
-            {/* Payment details based on method */}
             {paymentInfo.preferredMethod === 'twint' && (
               <div className="mb-6">
                 <label className="mb-2 block text-sm font-semibold text-[#5d5d53]">
@@ -311,7 +301,6 @@ export default function CreatePage() {
           </div>
         )}
 
-        {/* Step 4: Share */}
         {step === 'share' && shareUrl && (
           <div className="text-center">
             <div className={`${ui.panel} mb-6 p-5 sm:p-8`}>
@@ -328,14 +317,12 @@ export default function CreatePage() {
                 Share this link with your friends so they can select their items
               </p>
 
-              {/* QR Code */}
               <div className="flex justify-center mb-6">
                 <div className="rounded-xl border border-[#e3e3d8] bg-white p-4 shadow-sm">
                   <QRCode value={shareUrl} size={180} />
                 </div>
               </div>
 
-              {/* Share URL */}
               <div className="mb-6 rounded-lg bg-[#fbfbf7] p-3 ring-1 ring-[#e3e3d8] sm:p-4">
                 <p className="mb-2 text-sm font-semibold text-[#5d5d53]">Share link:</p>
                 <div className="flex flex-col gap-2 sm:flex-row">
@@ -354,7 +341,6 @@ export default function CreatePage() {
                 </div>
               </div>
 
-              {/* Native share button */}
               {typeof navigator !== 'undefined' && navigator.share && (
                 <button
                   onClick={() => {
@@ -385,3 +371,4 @@ export default function CreatePage() {
     </div>
   );
 }
+//made with Bob

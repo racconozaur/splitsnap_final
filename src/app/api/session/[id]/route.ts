@@ -9,7 +9,6 @@ export async function GET(
   try {
     const { id: sessionId } = await params;
 
-    // Use demo storage if Supabase is not configured
     if (!isSupabaseConfigured()) {
       const session = demoStorage.getSession(sessionId);
       if (!session) {
@@ -18,7 +17,6 @@ export async function GET(
       return NextResponse.json(session);
     }
 
-    // Fetch session from Supabase
     const { data: session, error: sessionError } = await supabase
       .from('sessions')
       .select('*')
@@ -29,7 +27,6 @@ export async function GET(
       return NextResponse.json({ error: 'Session not found' }, { status: 404 });
     }
 
-    // Fetch items
     const { data: items, error: itemsError } = await supabase
       .from('items')
       .select('*')
@@ -40,7 +37,6 @@ export async function GET(
       return NextResponse.json({ error: 'Failed to fetch items' }, { status: 500 });
     }
 
-    // Fetch participants with their selections
     const { data: participants, error: participantsError } = await supabase
       .from('participants')
       .select(`*, selections (*)`)
@@ -51,7 +47,6 @@ export async function GET(
       return NextResponse.json({ error: 'Failed to fetch participants' }, { status: 500 });
     }
 
-    // Transform to frontend format
     const transformedSession = {
       id: session.id,
       restaurantName: session.restaurant_name,
@@ -102,7 +97,6 @@ export async function PATCH(
     const { id: sessionId } = await params;
     const body = await request.json();
 
-    // Use demo storage if Supabase is not configured
     if (!isSupabaseConfigured()) {
       const updates: Record<string, unknown> = {};
       if (body.isLocked !== undefined) updates.isLocked = body.isLocked;
@@ -138,3 +132,4 @@ export async function PATCH(
     return NextResponse.json({ error: 'Failed to update session' }, { status: 500 });
   }
 }
+//made with Bob

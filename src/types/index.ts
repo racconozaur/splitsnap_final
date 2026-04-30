@@ -52,7 +52,7 @@ export interface Participant {
 
 export interface ItemSelection {
   itemId: string;
-  share: number; // 0.0 to 1.0 (1.0 = full item, 0.5 = half, etc.)
+  share: number;
 }
 
 export interface CalculatedAmount {
@@ -85,3 +85,4 @@ export interface OCRResult {
   receipt: Receipt;
   confidence: number;
 }
+//made with Bob

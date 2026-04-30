@@ -40,7 +40,6 @@ export async function POST(request: NextRequest) {
       });
     }
 
-    // Free local fallback when Gemini is not configured.
     const rawText = await withTimeout(
       extractTextFromImageLocal(buffer),
       120000,
@@ -63,3 +62,4 @@ export async function POST(request: NextRequest) {
     );
   }
 }
+//made with Bob

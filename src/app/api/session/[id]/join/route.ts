@@ -19,7 +19,6 @@ export async function POST(
       return NextResponse.json({ error: 'Name is required' }, { status: 400 });
     }
 
-    // Use demo storage if Supabase is not configured
     if (!isSupabaseConfigured()) {
       const session = demoStorage.getSession(sessionId);
       if (!session) {
@@ -46,7 +45,6 @@ export async function POST(
       });
     }
 
-    // Check if session exists and is not locked
     const { data: session, error: sessionError } = await supabase
       .from('sessions')
       .select('id, is_locked')
@@ -64,7 +62,6 @@ export async function POST(
       );
     }
 
-    // Check if participant with same name already exists
     const { data: existing } = await supabase
       .from('participants')
       .select('id')
@@ -80,7 +77,6 @@ export async function POST(
       });
     }
 
-    // Create new participant
     const participantId = nanoid(10);
 
     const { error: participantError } = await supabase
@@ -108,3 +104,4 @@ export async function POST(
     return NextResponse.json({ error: 'Failed to join session' }, { status: 500 });
   }
 }
+//made with Bob

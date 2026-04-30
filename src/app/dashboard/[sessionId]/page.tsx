@@ -59,7 +59,6 @@ export default function DashboardPage({ params }: PageProps) {
   useEffect(() => {
     fetchSession();
 
-    // Auto-refresh every 10 seconds
     const interval = setInterval(() => fetchSession(), 10000);
     return () => clearInterval(interval);
   }, [sessionId]);
@@ -173,7 +172,6 @@ export default function DashboardPage({ params }: PageProps) {
 
   return (
     <div className={ui.page}>
-      {/* Header */}
       <header className={ui.topbar}>
         <div className="mx-auto flex max-w-4xl items-center justify-between px-4 py-4">
           <div>
@@ -191,7 +189,6 @@ export default function DashboardPage({ params }: PageProps) {
       </header>
 
       <main className="mx-auto max-w-4xl space-y-5 px-3 py-5 sm:px-4 sm:py-6">
-        {/* Summary Cards */}
         <div className="grid grid-cols-2 gap-3 md:grid-cols-4 md:gap-4">
           <div className={`${ui.panel} p-4`}>
             <p className="mb-1 text-sm text-[#5d5d53]">Total Bill</p>
@@ -213,7 +210,6 @@ export default function DashboardPage({ params }: PageProps) {
           </div>
         </div>
 
-        {/* Share Card */}
         <div className={`${ui.panel} p-5 sm:p-6`}>
           <div className="flex items-start justify-between mb-4">
             <div>
@@ -288,7 +284,6 @@ export default function DashboardPage({ params }: PageProps) {
           </div>
         </div>
 
-        {/* Participants */}
         <div className={`${ui.panel} p-5 sm:p-6`}>
           <h2 className="mb-4 flex items-center gap-2 text-lg font-semibold text-[#171717]">
             <Users className="w-5 h-5" />
@@ -326,7 +321,6 @@ export default function DashboardPage({ params }: PageProps) {
                     {getStatusBadge(participant.paymentStatus)}
                   </div>
 
-                  {/* Payment status dropdown */}
                   <select
                     value={participant.paymentStatus}
                     onChange={(e) => updatePaymentStatus(participant.id, e.target.value as 'unpaid' | 'pending' | 'paid' | 'confirmed')}
@@ -343,7 +337,6 @@ export default function DashboardPage({ params }: PageProps) {
           )}
         </div>
 
-        {/* Item Claims */}
         <div className={`${ui.panel} p-5 sm:p-6`}>
           <h2 className="mb-4 flex items-center gap-2 text-lg font-semibold text-[#171717]">
             <Receipt className="w-5 h-5" />
@@ -398,7 +391,6 @@ export default function DashboardPage({ params }: PageProps) {
             })}
           </div>
 
-          {/* Unclaimed warning */}
           {summary.totalUnclaimed > 0.50 && (
             <div className="mt-4 flex items-start gap-3 rounded-lg border border-[#f2d37b] bg-[#fff8df] p-4">
               <AlertTriangle className="mt-0.5 h-5 w-5 flex-shrink-0 text-[#b57905]" />
@@ -414,7 +406,6 @@ export default function DashboardPage({ params }: PageProps) {
           )}
         </div>
 
-        {/* Fairness Summary */}
         <div className={`${ui.panel} p-5 sm:p-6`}>
           <h2 className="mb-4 text-lg font-semibold text-[#171717]">Fairness Summary</h2>
 
@@ -441,3 +432,4 @@ export default function DashboardPage({ params }: PageProps) {
     </div>
   );
 }
+//made with Bob

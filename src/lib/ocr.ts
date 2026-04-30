@@ -113,9 +113,6 @@ Rules:
 - If unsure about an item, keep it but lower confidence.
 - If the total does not exactly match, prefer the printed total and let the user edit later.`;
 
-/**
- * Process receipt image with Gemini Vision and return structured receipt JSON.
- */
 export async function extractReceiptWithGemini(
   imageBuffer: Buffer,
   mimeType: string
@@ -238,9 +235,6 @@ function sleep(milliseconds: number): Promise<void> {
   return new Promise((resolve) => setTimeout(resolve, milliseconds));
 }
 
-/**
- * Process receipt image using Google Cloud Vision API
- */
 export async function extractTextFromImage(imageBase64: string): Promise<string> {
   const apiKey = process.env.GOOGLE_CLOUD_API_KEY;
 
@@ -284,14 +278,9 @@ export async function extractTextFromImage(imageBase64: string): Promise<string>
     throw new Error('No text detected in image');
   }
 
-  // First annotation contains the full text
   return textAnnotations[0].description || '';
 }
 
-/**
- * Process receipt image locally with Tesseract.js.
- * This avoids paid OCR APIs and works without Google Cloud billing.
- */
 export async function extractTextFromImageLocal(imageBuffer: Buffer): Promise<string> {
   const runRecognition = async () => {
     const worker = await getLocalOcrWorker();
@@ -339,7 +328,6 @@ export function resetLocalOcrWorker() {
 
   if (workerPromise) {
     workerPromise.then((worker) => worker.terminate()).catch(() => {
-      // Ignore shutdown errors; the next scan will create a fresh worker.
     });
   }
 }
@@ -423,10 +411,6 @@ function roundCurrency(value: number): number {
   return Math.round(value * 100) / 100;
 }
 
-/**
- * Parse extracted OCR text into structured receipt data
- * Uses pattern matching and heuristics
- */
 export function parseReceiptText(ocrText: string): Receipt {
   const lines = ocrText.split('\n').map(l => l.trim()).filter(l => l);
 
@@ -438,16 +422,13 @@ export function parseReceiptText(ocrText: string): Receipt {
   let total = 0;
   let restaurant = '';
 
-  // Try to detect restaurant name (usually first line or two)
   if (lines.length > 0) {
     restaurant = lines[0];
-    // If second line doesn't look like a price line, it might be part of name
     if (lines.length > 1 && !containsPrice(lines[1])) {
       restaurant = `${lines[0]} ${lines[1]}`;
     }
   }
 
-  // Common patterns for receipt parsing
   const pricePattern = /(\d+[.,]\d{2})/g;
   const quantityPattern = /^(\d+)\s*[xX×]\s*/;
   const totalKeywords = ['total', 'summe', 'gesamt', 'amount', 'zu zahlen', 'grand total'];
@@ -463,13 +444,11 @@ export function parseReceiptText(ocrText: string): Receipt {
 
     if (!prices || prices.length === 0) continue;
 
-    // Parse the price (last number on line is usually the price)
     const priceStr = prices[prices.length - 1].replace(',', '.');
     const price = parseFloat(priceStr);
 
     if (isNaN(price)) continue;
 
-    // Check for special lines
     if (totalKeywords.some(k => lineLower.includes(k))) {
       total = price;
       continue;
@@ -495,11 +474,8 @@ export function parseReceiptText(ocrText: string): Receipt {
       continue;
     }
 
-    // This is likely an item line
-    // Extract item name (everything before the price)
     let itemName = line.replace(pricePattern, '').trim();
 
-    // Check for quantity prefix
     let quantity = 1;
     const qtyMatch = itemName.match(quantityPattern);
     if (qtyMatch) {
@@ -507,18 +483,15 @@ export function parseReceiptText(ocrText: string): Receipt {
       itemName = itemName.replace(quantityPattern, '').trim();
     }
 
-    // Check for quantity at end (e.g., "Pizza x2")
     const qtyEndMatch = itemName.match(/\s*[xX×]\s*(\d+)\s*$/);
     if (qtyEndMatch) {
       quantity = parseInt(qtyEndMatch[1], 10);
       itemName = itemName.replace(/\s*[xX×]\s*\d+\s*$/, '').trim();
     }
 
-    // Clean up item name
     itemName = cleanItemName(itemName);
 
     if (itemName.length > 0 && price > 0) {
-      // Calculate confidence based on various factors
       const confidence = calculateItemConfidence(itemName, price, line);
 
       items.push({
@@ -532,12 +505,10 @@ export function parseReceiptText(ocrText: string): Receipt {
     }
   }
 
-  // If subtotal not found, calculate from items
   if (subtotal === 0 && items.length > 0) {
     subtotal = items.reduce((sum, item) => sum + item.price * item.quantity, 0);
   }
 
-  // If total not found, calculate it
   if (total === 0) {
     total = subtotal + tax + tip + serviceFee;
   }
@@ -558,7 +529,6 @@ function containsPrice(line: string): boolean {
 }
 
 function cleanItemName(name: string): string {
-  // Remove common noise characters
   return name
     .replace(/[*#@$%^&(){}[\]|\\/<>]/g, '')
     .replace(/\s+/g, ' ')
@@ -566,33 +536,23 @@ function cleanItemName(name: string): string {
 }
 
 function calculateItemConfidence(name: string, price: number, originalLine: string): number {
-  let confidence = 0.8; // Base confidence
+  let confidence = 0.8;
 
-  // Reduce confidence for very short names
   if (name.length < 3) confidence -= 0.2;
 
-  // Reduce confidence for names with unusual characters
   if (/[0-9]{3,}/.test(name)) confidence -= 0.15;
 
-  // Reduce confidence for very high or low prices
   if (price < 0.50 || price > 500) confidence -= 0.1;
 
-  // Increase confidence for common food words
   const foodWords = ['pizza', 'burger', 'salad', 'soup', 'pasta', 'coffee', 'tea', 'beer', 'wine', 'water', 'cola', 'juice'];
   if (foodWords.some(w => name.toLowerCase().includes(w))) confidence += 0.1;
 
-  // Reduce confidence if original line had OCR artifacts
   if (/[|1l]{2,}|[0O]{2,}/.test(originalLine)) confidence -= 0.15;
 
   return Math.max(0.1, Math.min(1.0, confidence));
 }
 
-/**
- * Use AI to parse receipt text into structured data (fallback/enhancement)
- * This can be used with OpenAI or other LLM APIs for better parsing
- */
 export async function parseReceiptWithAI(ocrText: string): Promise<Receipt> {
-  // For hackathon MVP, we'll use the rule-based parser
-  // This function can be enhanced to use GPT or Claude for better parsing
   return parseReceiptText(ocrText);
 }
+//made with Bob

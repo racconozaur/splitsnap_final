@@ -1,7 +1,3 @@
-/**
- * In-memory storage for demo mode (when Supabase is not configured)
- * This allows the app to work without a database for hackathon demos
- */
 
 import { Session, Participant, ReceiptItem, PaymentInfo, ItemSelection } from '@/types';
 
@@ -10,7 +6,6 @@ interface StoredSession {
   participants: Participant[];
 }
 
-// In-memory storage (server-side)
 const sessions = new Map<string, StoredSession>();
 
 export const demoStorage = {
@@ -69,7 +64,6 @@ export const demoStorage = {
     const stored = sessions.get(sessionId);
     if (!stored) return null;
 
-    // Check if participant already exists
     const existing = stored.participants.find(
       p => p.name.toLowerCase() === name.toLowerCase()
     );
@@ -127,3 +121,4 @@ export const demoStorage = {
     return true;
   },
 };
+//made with Bob

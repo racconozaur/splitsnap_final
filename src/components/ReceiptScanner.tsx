@@ -32,7 +32,6 @@ export default function ReceiptScanner({ onScanComplete }: ReceiptScannerProps) 
     setError(null);
     setScanSeconds(0);
 
-    // Show preview
     const reader = new FileReader();
     reader.onload = (e) => setPreview(e.target?.result as string);
     reader.readAsDataURL(file);
@@ -92,7 +91,6 @@ export default function ReceiptScanner({ onScanComplete }: ReceiptScannerProps) 
 
   return (
     <div className="w-full">
-      {/* Hidden file inputs */}
       <input
         ref={fileInputRef}
         type="file"
@@ -110,7 +108,6 @@ export default function ReceiptScanner({ onScanComplete }: ReceiptScannerProps) 
       />
 
       {isScanning ? (
-        /* Scanning state */
         <div className={`${ui.panel} flex flex-col items-center justify-center p-8 text-center sm:p-12`}>
           <Loader2 className="mb-4 h-12 w-12 animate-spin text-[#0f766e]" />
           <p className="text-lg font-semibold text-[#171717]">Scanning receipt</p>
@@ -127,7 +124,6 @@ export default function ReceiptScanner({ onScanComplete }: ReceiptScannerProps) 
           )}
         </div>
       ) : (
-        /* Upload zone */
         <div
           onDrop={handleDrop}
           onDragOver={handleDragOver}
@@ -170,7 +166,6 @@ export default function ReceiptScanner({ onScanComplete }: ReceiptScannerProps) 
         </div>
       )}
 
-      {/* Error message */}
       {error && (
         <div className="mt-4 rounded-lg border border-[#f2d37b] bg-[#fff8df] p-4">
           <div className="flex items-start gap-3">
@@ -250,3 +245,4 @@ function loadImage(src: string): Promise<HTMLImageElement> {
     image.src = src;
   });
 }
+//made with Bob

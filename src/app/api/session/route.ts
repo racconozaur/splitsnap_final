@@ -23,13 +23,11 @@ export async function POST(request: NextRequest) {
     const sessionId = nanoid(10);
     const shareUrl = `${getPublicOrigin(request)}/split/${sessionId}`;
 
-    // Use demo storage if Supabase is not configured
     if (!isSupabaseConfigured()) {
       demoStorage.createSession(sessionId, body);
       return NextResponse.json({ success: true, sessionId, shareUrl });
     }
 
-    // Create session in Supabase
     const { error: sessionError } = await supabase
       .from('sessions')
       .insert({
@@ -54,7 +52,6 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Create items
     const itemsToInsert = body.items.map(item => ({
       id: item.id,
       session_id: sessionId,
@@ -102,3 +99,4 @@ function getPublicOrigin(request: NextRequest): string {
 
   return process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000';
 }
+//made with Bob

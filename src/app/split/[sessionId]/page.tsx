@@ -18,7 +18,6 @@ export default function SplitPage({ params }: PageProps) {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
-  // Participant state
   const [participantName, setParticipantName] = useState('');
   const [participantId, setParticipantId] = useState<string | null>(null);
   const [hasJoined, setHasJoined] = useState(false);
@@ -27,7 +26,6 @@ export default function SplitPage({ params }: PageProps) {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [hasConfirmed, setHasConfirmed] = useState(false);
 
-  // Fetch session data
   useEffect(() => {
     const fetchSession = async () => {
       try {
@@ -46,7 +44,6 @@ export default function SplitPage({ params }: PageProps) {
 
     fetchSession();
 
-    // Check for existing participant in localStorage
     const storedParticipantId = localStorage.getItem(`splitsnap_participant_${sessionId}`);
     const storedName = localStorage.getItem(`splitsnap_name_${sessionId}`);
     if (storedParticipantId && storedName) {
@@ -56,7 +53,6 @@ export default function SplitPage({ params }: PageProps) {
     }
   }, [sessionId]);
 
-  // Load existing selections when participant rejoins
   useEffect(() => {
     if (hasJoined && session && participantId) {
       const existingParticipant = session.participants.find(p => p.id === participantId);
@@ -64,9 +60,8 @@ export default function SplitPage({ params }: PageProps) {
         setSelections(existingParticipant.selections);
         if (existingParticipant.amountOwed > 0) {
           setHasConfirmed(true);
-          // Reconstruct calculated amount
           setCalculatedAmount({
-            itemsTotal: existingParticipant.amountOwed, // Approximation
+            itemsTotal: existingParticipant.amountOwed,
             taxShare: 0,
             tipShare: 0,
             serviceFeeShare: 0,
@@ -102,11 +97,9 @@ export default function SplitPage({ params }: PageProps) {
       setParticipantId(data.participantId);
       setHasJoined(true);
 
-      // Store in localStorage
       localStorage.setItem(`splitsnap_participant_${sessionId}`, data.participantId);
       localStorage.setItem(`splitsnap_name_${sessionId}`, participantName.trim());
 
-      // Refresh session to get updated participants
       const sessionResponse = await fetch(`/api/session/${sessionId}`);
       if (sessionResponse.ok) {
         const sessionData = await sessionResponse.json();
@@ -182,7 +175,6 @@ export default function SplitPage({ params }: PageProps) {
 
   if (!session) return null;
 
-  // If session is locked and user hasn't joined, show locked message
   if (session.isLocked && !hasJoined) {
     return (
       <div className={`${ui.page} flex items-center justify-center p-4`}>
@@ -199,7 +191,6 @@ export default function SplitPage({ params }: PageProps) {
 
   return (
     <div className={ui.page}>
-      {/* Header */}
       <header className={ui.topbar}>
         <div className="mx-auto max-w-xl px-4 py-4">
           <h1 className="text-center text-lg font-semibold text-[#171717]">
@@ -212,7 +203,6 @@ export default function SplitPage({ params }: PageProps) {
       </header>
 
       <main className="mx-auto max-w-xl px-3 py-5 sm:px-4 sm:py-6">
-        {/* Join form */}
         {!hasJoined && (
           <div className={`${ui.panel} mb-6 p-5 sm:p-6`}>
             <h2 className="mb-3 text-xl font-semibold text-[#171717]">Join the split</h2>
@@ -253,7 +243,6 @@ export default function SplitPage({ params }: PageProps) {
           </div>
         )}
 
-        {/* Item selection */}
         {hasJoined && !hasConfirmed && (
           <>
             <div className={`${ui.panel} mb-6 p-5 sm:p-6`}>
@@ -274,7 +263,6 @@ export default function SplitPage({ params }: PageProps) {
               />
             </div>
 
-            {/* Summary */}
             <div className={`${ui.panel} mb-6 p-5 sm:p-6`}>
               <h3 className="mb-4 text-lg font-semibold text-[#171717]">Your selection</h3>
 
@@ -329,7 +317,6 @@ export default function SplitPage({ params }: PageProps) {
           </>
         )}
 
-        {/* Payment view */}
         {hasConfirmed && calculatedAmount && (
           <div>
             <div className={`${ui.panel} mb-6 p-5 sm:p-6`}>
@@ -388,3 +375,4 @@ export default function SplitPage({ params }: PageProps) {
     </div>
   );
 }
+//made with Bob

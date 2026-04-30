@@ -23,15 +23,11 @@ export default function PaymentQR({
 }: PaymentQRProps) {
   const reason = `Bill split - ${restaurantName} (${participantName})`;
 
-  // Generate TWINT QR content
-  // TWINT doesn't have a public API, so we create a text-based QR for manual payment
   const twintContent = `Pay ${payerName}
 ${formatCurrency(amount)}
 ${paymentInfo.twintPhone || 'Phone number not provided'}
 Reason: ${reason}`;
 
-  // Generate Revolut payment link content
-  // Revolut.me links support amount parameter
   const revolutLink = paymentInfo.revolutTag
     ? buildRevolutPaymentLink(paymentInfo.revolutTag, amount, reason)
     : '';
@@ -51,7 +47,6 @@ Reason: ${reason}`;
       </h3>
 
       <div className="space-y-6">
-        {/* TWINT QR */}
         {(preferredMethod === 'twint' || paymentInfo.twintPhone) && (
           <div className="rounded-xl border border-[#e3e3d8] bg-[#fbfbf7] p-4">
             <div className="flex items-center gap-2 mb-3">
@@ -78,7 +73,6 @@ Reason: ${reason}`;
           </div>
         )}
 
-        {/* Revolut QR */}
         {(preferredMethod === 'revolut' || paymentInfo.revolutTag) && (
           <div className="rounded-xl border border-[#e3e3d8] bg-[#fbfbf7] p-4">
             <div className="flex items-center gap-2 mb-3">
@@ -117,7 +111,6 @@ Reason: ${reason}`;
           </div>
         )}
 
-        {/* IBAN Info */}
         {(preferredMethod === 'iban' || paymentInfo.iban) && paymentInfo.iban && (
           <div className="rounded-xl border border-[#e3e3d8] bg-[#fbfbf7] p-4">
             <div className="flex items-center gap-2 mb-3">
@@ -137,7 +130,6 @@ Reason: ${reason}`;
           </div>
         )}
 
-        {/* Cash Option */}
         {preferredMethod === 'cash' && (
           <div className="rounded-xl border border-[#e3e3d8] bg-[#fbfbf7] p-4">
             <div className="flex items-center gap-2 mb-3">
@@ -172,3 +164,4 @@ function buildRevolutPaymentLink(revolutTag: string, amount: number, message: st
   url.searchParams.set('message', message);
   return url.toString();
 }
+//made with Bob

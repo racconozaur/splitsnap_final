@@ -15,7 +15,6 @@ export async function POST(
     const { id: sessionId } = await params;
     const body: MarkPaidBody = await request.json();
 
-    // Use demo storage if Supabase is not configured
     if (!isSupabaseConfigured()) {
       const success = demoStorage.updatePaymentStatus(
         sessionId,
@@ -37,7 +36,6 @@ export async function POST(
       });
     }
 
-    // Verify participant belongs to this session
     const { data: participant, error: participantError } = await supabase
       .from('participants')
       .select('*')
@@ -52,7 +50,6 @@ export async function POST(
       );
     }
 
-    // Update payment status
     const { error: updateError } = await supabase
       .from('participants')
       .update({ payment_status: body.status })
@@ -79,3 +76,4 @@ export async function POST(
     );
   }
 }
+//made with Bob
