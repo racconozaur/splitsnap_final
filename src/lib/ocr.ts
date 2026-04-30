@@ -33,6 +33,12 @@ interface GeminiReceipt {
   total: number;
 }
 
+interface GeminiApiError extends Error {
+  status?: number;
+  body?: string;
+  model?: string;
+}
+
 const receiptJsonSchema = {
   type: 'object',
   properties: {
@@ -121,8 +127,51 @@ export async function extractReceiptWithGemini(
   }
 
   const safeMimeType = isSupportedGeminiImageMimeType(mimeType) ? mimeType : 'image/jpeg';
-  const model = process.env.GEMINI_MODEL || 'gemini-2.5-flash';
+  const retryableErrors: GeminiApiError[] = [];
 
+  for (const model of getGeminiModelFallbacks()) {
+    for (let attempt = 1; attempt <= 2; attempt++) {
+      try {
+        const data = await callGeminiReceiptModel(apiKey, model, imageBuffer, safeMimeType);
+        const responseText = data.candidates?.[0]?.content?.parts
+          ?.map((part: { text?: string }) => part.text || '')
+          .join('')
+          .trim();
+
+        if (!responseText) {
+          throw new Error(`Gemini model ${model} returned no receipt data`);
+        }
+
+        const parsed = parseJsonObject<GeminiReceipt>(responseText);
+        return normalizeGeminiReceipt(parsed);
+      } catch (error) {
+        if (!isRetryableGeminiError(error)) {
+          throw error;
+        }
+
+        const geminiError = error as GeminiApiError;
+        retryableErrors.push(geminiError);
+        console.warn(`Gemini model ${model} failed with ${geminiError.status}; attempt ${attempt}`);
+
+        if (attempt < 2) {
+          await sleep(700 * attempt);
+        }
+      }
+    }
+  }
+
+  const details = retryableErrors
+    .map((error) => `${error.model || 'unknown'}: ${error.status || 'unknown'}`)
+    .join(', ');
+  throw new Error(`Gemini is temporarily busy. Tried ${details}. Please try again in a minute.`);
+}
+
+async function callGeminiReceiptModel(
+  apiKey: string,
+  model: string,
+  imageBuffer: Buffer,
+  mimeType: string
+) {
   const response = await fetch(
     `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent`,
     {
@@ -137,7 +186,7 @@ export async function extractReceiptWithGemini(
             parts: [
               {
                 inline_data: {
-                  mime_type: safeMimeType,
+                  mime_type: mimeType,
                   data: imageBuffer.toString('base64'),
                 },
               },
@@ -156,21 +205,37 @@ export async function extractReceiptWithGemini(
 
   if (!response.ok) {
     const errorText = await response.text();
-    throw new Error(`Gemini receipt scan failed: ${errorText}`);
+    const error = new Error(`Gemini receipt scan failed with ${model}: ${errorText}`) as GeminiApiError;
+    error.status = response.status;
+    error.body = errorText;
+    error.model = model;
+    throw error;
   }
 
-  const data = await response.json();
-  const responseText = data.candidates?.[0]?.content?.parts
-    ?.map((part: { text?: string }) => part.text || '')
-    .join('')
-    .trim();
+  return response.json();
+}
 
-  if (!responseText) {
-    throw new Error('Gemini returned no receipt data');
-  }
+function getGeminiModelFallbacks(): string[] {
+  const configuredModel = process.env.GEMINI_MODEL?.trim();
+  const configuredFallbacks = process.env.GEMINI_FALLBACK_MODELS
+    ?.split(',')
+    .map((model) => model.trim())
+    .filter(Boolean) || [];
 
-  const parsed = parseJsonObject<GeminiReceipt>(responseText);
-  return normalizeGeminiReceipt(parsed);
+  return Array.from(new Set([
+    configuredModel || 'gemini-2.5-flash',
+    ...configuredFallbacks,
+    'gemini-2.5-flash-lite',
+  ]));
+}
+
+function isRetryableGeminiError(error: unknown): boolean {
+  const status = (error as GeminiApiError).status;
+  return status === 429 || status === 500 || status === 502 || status === 503 || status === 504;
+}
+
+function sleep(milliseconds: number): Promise<void> {
+  return new Promise((resolve) => setTimeout(resolve, milliseconds));
 }
 
 /**
