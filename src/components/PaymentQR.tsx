@@ -1,5 +1,6 @@
 'use client';
 
+import { useState } from 'react';
 import QRCode from 'react-qr-code';
 import { PaymentInfo } from '@/types';
 import { formatCurrency } from '@/lib/calculations';
@@ -21,6 +22,7 @@ export default function PaymentQR({
   participantName,
   restaurantName,
 }: PaymentQRProps) {
+  const [copiedRevolut, setCopiedRevolut] = useState(false);
   const reason = `Bill split - ${restaurantName} (${participantName})`;
 
   const twintContent = `Pay ${payerName}
@@ -29,16 +31,33 @@ ${paymentInfo.twintPhone || 'Phone number not provided'}
 Reason: ${reason}`;
 
   const revolutLink = paymentInfo.revolutTag
-    ? buildRevolutPaymentLink(paymentInfo.revolutTag, amount, reason)
+    ? buildRevolutPaymentLink(paymentInfo.revolutTag)
     : '';
   const revolutContent = revolutLink
-    ? revolutLink
+    ? `Pay ${payerName}
+${formatCurrency(amount)}
+Revolut: @${paymentInfo.revolutTag}
+Reason: ${reason}`
     : `Pay ${payerName}
 ${formatCurrency(amount)}
 via Revolut
 Reason: ${reason}`;
 
   const preferredMethod = paymentInfo.preferredMethod;
+
+  const handleRevolutOpen = async () => {
+    const paymentText = `${formatCurrency(amount)}\n${reason}\nPay ${payerName} on Revolut: @${paymentInfo.revolutTag}`;
+
+    try {
+      await navigator.clipboard.writeText(paymentText);
+      setCopiedRevolut(true);
+      window.setTimeout(() => setCopiedRevolut(false), 2500);
+    } catch {
+      setCopiedRevolut(false);
+    }
+
+    window.location.href = revolutLink;
+  };
 
   return (
     <div className={`${ui.panel} p-5 sm:p-6`}>
@@ -94,18 +113,21 @@ Reason: ${reason}`;
 
             <div className="text-center text-sm text-[#5d5d53]">
               <p className="font-semibold text-[#171717]">@{paymentInfo.revolutTag || 'No tag provided'}</p>
-              <p className="mt-1 text-[#5d5d53]">
-                Opens Revolut with amount and reference where supported.
+              <div className="mt-3 rounded-lg bg-white p-3 text-center ring-1 ring-[#e3e3d8]">
+                <p className="text-xs font-medium uppercase tracking-[0.08em] text-[#77776c]">Amount to enter</p>
+                <p className="mt-1 text-2xl font-semibold text-[#171717]">{formatCurrency(amount)}</p>
+              </div>
+              <p className="mt-3 text-[#5d5d53]">
+                Revolut personal links open the profile. The amount and reference are copied first.
               </p>
               {revolutLink && (
-                <a
-                  href={revolutLink}
-                  target="_blank"
-                  rel="noopener noreferrer"
+                <button
+                  type="button"
+                  onClick={handleRevolutOpen}
                   className="mt-3 inline-flex w-full justify-center rounded-lg bg-[#171717] px-4 py-3 font-semibold text-white hover:bg-[#30302b]"
                 >
-                  Pay with Revolut
-                </a>
+                  {copiedRevolut ? 'Copied amount. Opening Revolut...' : 'Copy amount and open Revolut'}
+                </button>
               )}
             </div>
           </div>
@@ -156,12 +178,8 @@ Reason: ${reason}`;
   );
 }
 
-function buildRevolutPaymentLink(revolutTag: string, amount: number, message: string): string {
+function buildRevolutPaymentLink(revolutTag: string): string {
   const cleanTag = revolutTag.trim().replace(/^@/, '');
-  const url = new URL(`https://revolut.me/${cleanTag}`);
-  url.searchParams.set('amount', amount.toFixed(2));
-  url.searchParams.set('currency', 'CHF');
-  url.searchParams.set('message', message);
-  return url.toString();
+  return `https://revolut.me/${cleanTag}`;
 }
 //made with Bob
