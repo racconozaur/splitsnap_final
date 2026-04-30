@@ -21,11 +21,11 @@ export async function POST(request: NextRequest) {
   try {
     const body: CreateSessionBody = await request.json();
     const sessionId = nanoid(10);
+    const shareUrl = `${getPublicOrigin(request)}/split/${sessionId}`;
 
     // Use demo storage if Supabase is not configured
     if (!isSupabaseConfigured()) {
       demoStorage.createSession(sessionId, body);
-      const shareUrl = `${process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000'}/split/${sessionId}`;
       return NextResponse.json({ success: true, sessionId, shareUrl });
     }
 
@@ -77,9 +77,6 @@ export async function POST(request: NextRequest) {
         { status: 500 }
       );
     }
-
-    const shareUrl = `${process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000'}/split/${sessionId}`;
-
     return NextResponse.json({
       success: true,
       sessionId,
@@ -92,4 +89,16 @@ export async function POST(request: NextRequest) {
       { status: 500 }
     );
   }
+}
+
+function getPublicOrigin(request: NextRequest): string {
+  const forwardedHost = request.headers.get('x-forwarded-host');
+  const forwardedProto = request.headers.get('x-forwarded-proto') || 'https';
+  const host = forwardedHost || request.headers.get('host');
+
+  if (host) {
+    return `${forwardedProto}://${host}`;
+  }
+
+  return process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000';
 }

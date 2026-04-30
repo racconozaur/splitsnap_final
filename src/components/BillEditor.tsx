@@ -1,10 +1,9 @@
 'use client';
 
-import { useState } from 'react';
 import { ReceiptItem, Receipt } from '@/types';
 import { formatCurrency } from '@/lib/calculations';
 import { nanoid } from 'nanoid';
-import { Trash2, Plus, AlertTriangle, Check } from 'lucide-react';
+import { Trash2, Plus, AlertTriangle } from 'lucide-react';
 
 interface BillEditorProps {
   receipt: Receipt;
@@ -12,8 +11,6 @@ interface BillEditorProps {
 }
 
 export default function BillEditor({ receipt, onUpdate }: BillEditorProps) {
-  const [editingItemId, setEditingItemId] = useState<string | null>(null);
-
   const updateItem = (itemId: string, updates: Partial<ReceiptItem>) => {
     const newItems = receipt.items.map(item =>
       item.id === itemId ? { ...item, ...updates } : item
@@ -54,7 +51,6 @@ export default function BillEditor({ receipt, onUpdate }: BillEditorProps) {
       ...receipt,
       items: newItems,
     });
-    setEditingItemId(newItem.id);
   };
 
   const updateReceiptField = (field: keyof Receipt, value: number | string) => {
@@ -81,7 +77,7 @@ export default function BillEditor({ receipt, onUpdate }: BillEditorProps) {
   const hasMismatch = Math.abs(calculatedTotal - receipt.total) > 0.02;
 
   return (
-    <div className="bg-white rounded-xl shadow-lg p-6">
+    <div className="bg-white rounded-xl shadow-lg p-4 sm:p-6">
       {/* Restaurant Name */}
       <div className="mb-6">
         <label className="block text-sm font-medium text-gray-500 mb-1">Restaurant</label>
@@ -95,7 +91,7 @@ export default function BillEditor({ receipt, onUpdate }: BillEditorProps) {
 
       {/* Items List */}
       <div className="space-y-2 mb-6">
-        <div className="flex items-center justify-between text-sm font-medium text-gray-500 px-2">
+        <div className="hidden sm:flex items-center justify-between text-sm font-medium text-gray-500 px-2">
           <span className="flex-1">Item</span>
           <span className="w-16 text-center">Qty</span>
           <span className="w-24 text-right">Price</span>
@@ -105,48 +101,61 @@ export default function BillEditor({ receipt, onUpdate }: BillEditorProps) {
         {receipt.items.map((item) => (
           <div
             key={item.id}
-            className={`flex items-center gap-2 p-2 rounded-lg ${
+            className={`grid grid-cols-[1fr_auto] sm:grid-cols-[auto_minmax(0,1fr)_4rem_7rem_2rem] gap-3 sm:gap-2 p-3 sm:p-2 rounded-lg ${
               item.confidence && item.confidence < 0.7
                 ? 'bg-yellow-50 border border-yellow-200'
                 : 'bg-gray-50'
             }`}
           >
             {item.confidence && item.confidence < 0.7 && (
-              <AlertTriangle className="w-4 h-4 text-yellow-500 flex-shrink-0" />
+              <AlertTriangle className="hidden sm:block w-4 h-4 text-yellow-500 self-center" />
             )}
 
-            <input
-              type="text"
-              value={item.name}
-              onChange={(e) => updateItem(item.id, { name: e.target.value })}
-              className="flex-1 bg-transparent border-b border-transparent hover:border-gray-300 focus:border-blue-500 outline-none px-1"
-              onFocus={() => setEditingItemId(item.id)}
-              onBlur={() => setEditingItemId(null)}
-            />
+            <div className={`${item.confidence && item.confidence < 0.7 ? 'sm:col-start-2' : 'sm:col-start-1 sm:col-span-2'} min-w-0`}>
+              <label className="sm:hidden block text-xs font-medium text-gray-500 mb-1">Item</label>
+              <div className="flex items-center gap-2">
+                {item.confidence && item.confidence < 0.7 && (
+                  <AlertTriangle className="sm:hidden w-4 h-4 text-yellow-500 flex-shrink-0" />
+                )}
+                <input
+                  type="text"
+                  value={item.name}
+                  onChange={(e) => updateItem(item.id, { name: e.target.value })}
+                  className="w-full min-w-0 bg-white sm:bg-transparent border border-gray-200 sm:border-b sm:border-x-0 sm:border-t-0 sm:border-transparent rounded-lg sm:rounded-none px-3 sm:px-1 py-2 sm:py-0 hover:border-gray-300 focus:border-blue-500 outline-none"
+                />
+              </div>
+            </div>
 
-            <input
-              type="number"
-              value={item.quantity}
-              onChange={(e) => updateItem(item.id, { quantity: parseInt(e.target.value) || 1 })}
-              min="1"
-              className="w-16 text-center bg-transparent border-b border-transparent hover:border-gray-300 focus:border-blue-500 outline-none"
-            />
-
-            <div className="w-24 flex items-center justify-end">
-              <span className="text-gray-400 mr-1">CHF</span>
+            <div className="sm:col-start-3">
+              <label className="sm:hidden block text-xs font-medium text-gray-500 mb-1">Qty</label>
               <input
                 type="number"
-                value={item.price}
-                onChange={(e) => updateItem(item.id, { price: parseFloat(e.target.value) || 0 })}
-                step="0.05"
-                min="0"
-                className="w-16 text-right bg-transparent border-b border-transparent hover:border-gray-300 focus:border-blue-500 outline-none"
+                value={item.quantity}
+                onChange={(e) => updateItem(item.id, { quantity: parseInt(e.target.value) || 1 })}
+                min="1"
+                className="w-20 sm:w-16 text-center bg-white sm:bg-transparent border border-gray-200 sm:border-b sm:border-x-0 sm:border-t-0 sm:border-transparent rounded-lg sm:rounded-none px-2 py-2 sm:py-0 hover:border-gray-300 focus:border-blue-500 outline-none"
               />
+            </div>
+
+            <div className="col-span-2 sm:col-span-1 sm:col-start-4">
+              <label className="sm:hidden block text-xs font-medium text-gray-500 mb-1">Unit price</label>
+              <div className="flex items-center rounded-lg sm:rounded-none border border-gray-200 sm:border-0 bg-white sm:bg-transparent px-3 sm:px-0 py-2 sm:py-0">
+                <span className="text-gray-400 mr-2 sm:mr-1">CHF</span>
+                <input
+                  type="number"
+                  value={item.price}
+                  onChange={(e) => updateItem(item.id, { price: parseFloat(e.target.value) || 0 })}
+                  step="0.05"
+                  min="0"
+                  className="w-full sm:w-16 text-right bg-transparent border-0 sm:border-b sm:border-transparent hover:border-gray-300 focus:border-blue-500 outline-none"
+                />
+              </div>
             </div>
 
             <button
               onClick={() => deleteItem(item.id)}
-              className="w-8 h-8 flex items-center justify-center text-gray-400 hover:text-red-500 hover:bg-red-50 rounded transition-colors"
+              aria-label={`Delete ${item.name}`}
+              className="col-start-2 row-start-1 sm:col-start-5 sm:row-start-auto justify-self-end self-start sm:self-center w-9 h-9 sm:w-8 sm:h-8 flex items-center justify-center text-gray-400 hover:text-red-500 hover:bg-red-50 rounded transition-colors"
             >
               <Trash2 className="w-4 h-4" />
             </button>
