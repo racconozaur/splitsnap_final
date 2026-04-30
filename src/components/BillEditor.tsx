@@ -2,6 +2,7 @@
 
 import { ReceiptItem, Receipt } from '@/types';
 import { formatCurrency } from '@/lib/calculations';
+import { ui } from '@/lib/ui';
 import { nanoid } from 'nanoid';
 import { Trash2, Plus, AlertTriangle } from 'lucide-react';
 
@@ -77,21 +78,21 @@ export default function BillEditor({ receipt, onUpdate }: BillEditorProps) {
   const hasMismatch = Math.abs(calculatedTotal - receipt.total) > 0.02;
 
   return (
-    <div className="bg-white rounded-xl shadow-lg p-4 sm:p-6">
+    <div className={`${ui.panel} p-4 sm:p-6`}>
       {/* Restaurant Name */}
       <div className="mb-6">
-        <label className="block text-sm font-medium text-gray-500 mb-1">Restaurant</label>
+        <label className="mb-1 block text-sm font-semibold text-[#5d5d53]">Restaurant</label>
         <input
           type="text"
           value={receipt.restaurant}
           onChange={(e) => updateReceiptField('restaurant', e.target.value)}
-          className="w-full text-xl font-bold border-b-2 border-gray-200 focus:border-blue-500 outline-none py-1 transition-colors"
+          className="w-full border-b-2 border-[#d8d8ce] bg-transparent py-1 text-xl font-semibold text-[#171717] outline-none transition-colors focus:border-[#171717]"
         />
       </div>
 
       {/* Items List */}
       <div className="space-y-2 mb-6">
-        <div className="hidden sm:flex items-center justify-between text-sm font-medium text-gray-500 px-2">
+        <div className="hidden items-center justify-between px-2 text-sm font-semibold text-[#77776c] sm:flex">
           <span className="flex-1">Item</span>
           <span className="w-16 text-center">Qty</span>
           <span className="w-24 text-right">Price</span>
@@ -103,51 +104,51 @@ export default function BillEditor({ receipt, onUpdate }: BillEditorProps) {
             key={item.id}
             className={`grid grid-cols-[1fr_auto] sm:grid-cols-[auto_minmax(0,1fr)_4rem_7rem_2rem] gap-3 sm:gap-2 p-3 sm:p-2 rounded-lg ${
               item.confidence && item.confidence < 0.7
-                ? 'bg-yellow-50 border border-yellow-200'
-                : 'bg-gray-50'
+                ? 'border border-[#f2d37b] bg-[#fff8df]'
+                : 'border border-[#e3e3d8] bg-[#fbfbf7]'
             }`}
           >
             {item.confidence && item.confidence < 0.7 && (
-              <AlertTriangle className="hidden sm:block w-4 h-4 text-yellow-500 self-center" />
+              <AlertTriangle className="hidden h-4 w-4 self-center text-[#b57905] sm:block" />
             )}
 
             <div className={`${item.confidence && item.confidence < 0.7 ? 'sm:col-start-2' : 'sm:col-start-1 sm:col-span-2'} min-w-0`}>
-              <label className="sm:hidden block text-xs font-medium text-gray-500 mb-1">Item</label>
+              <label className="mb-1 block text-xs font-semibold text-[#77776c] sm:hidden">Item</label>
               <div className="flex items-center gap-2">
                 {item.confidence && item.confidence < 0.7 && (
-                  <AlertTriangle className="sm:hidden w-4 h-4 text-yellow-500 flex-shrink-0" />
+                  <AlertTriangle className="h-4 w-4 flex-shrink-0 text-[#b57905] sm:hidden" />
                 )}
                 <input
                   type="text"
                   value={item.name}
                   onChange={(e) => updateItem(item.id, { name: e.target.value })}
-                  className="w-full min-w-0 bg-white sm:bg-transparent border border-gray-200 sm:border-b sm:border-x-0 sm:border-t-0 sm:border-transparent rounded-lg sm:rounded-none px-3 sm:px-1 py-2 sm:py-0 hover:border-gray-300 focus:border-blue-500 outline-none"
+                  className="w-full min-w-0 rounded-lg border border-[#d8d8ce] bg-white px-3 py-2 text-[#171717] outline-none hover:border-[#b8b8aa] focus:border-[#171717] sm:rounded-none sm:border-x-0 sm:border-t-0 sm:border-transparent sm:bg-transparent sm:px-1 sm:py-0"
                 />
               </div>
             </div>
 
             <div className="sm:col-start-3">
-              <label className="sm:hidden block text-xs font-medium text-gray-500 mb-1">Qty</label>
+              <label className="mb-1 block text-xs font-semibold text-[#77776c] sm:hidden">Qty</label>
               <input
                 type="number"
                 value={item.quantity}
                 onChange={(e) => updateItem(item.id, { quantity: parseInt(e.target.value) || 1 })}
                 min="1"
-                className="w-20 sm:w-16 text-center bg-white sm:bg-transparent border border-gray-200 sm:border-b sm:border-x-0 sm:border-t-0 sm:border-transparent rounded-lg sm:rounded-none px-2 py-2 sm:py-0 hover:border-gray-300 focus:border-blue-500 outline-none"
+                className="w-20 rounded-lg border border-[#d8d8ce] bg-white px-2 py-2 text-center text-[#171717] outline-none hover:border-[#b8b8aa] focus:border-[#171717] sm:w-16 sm:rounded-none sm:border-x-0 sm:border-t-0 sm:border-transparent sm:bg-transparent sm:py-0"
               />
             </div>
 
             <div className="col-span-2 sm:col-span-1 sm:col-start-4">
-              <label className="sm:hidden block text-xs font-medium text-gray-500 mb-1">Unit price</label>
-              <div className="flex items-center rounded-lg sm:rounded-none border border-gray-200 sm:border-0 bg-white sm:bg-transparent px-3 sm:px-0 py-2 sm:py-0">
-                <span className="text-gray-400 mr-2 sm:mr-1">CHF</span>
+              <label className="mb-1 block text-xs font-semibold text-[#77776c] sm:hidden">Unit price</label>
+              <div className="flex items-center rounded-lg border border-[#d8d8ce] bg-white px-3 py-2 sm:rounded-none sm:border-0 sm:bg-transparent sm:px-0 sm:py-0">
+                <span className="mr-2 text-[#77776c] sm:mr-1">CHF</span>
                 <input
                   type="number"
                   value={item.price}
                   onChange={(e) => updateItem(item.id, { price: parseFloat(e.target.value) || 0 })}
                   step="0.05"
                   min="0"
-                  className="w-full sm:w-16 text-right bg-transparent border-0 sm:border-b sm:border-transparent hover:border-gray-300 focus:border-blue-500 outline-none"
+                  className="w-full border-0 bg-transparent text-right text-[#171717] outline-none hover:border-[#b8b8aa] focus:border-[#171717] sm:w-16 sm:border-b sm:border-transparent"
                 />
               </div>
             </div>
@@ -155,7 +156,7 @@ export default function BillEditor({ receipt, onUpdate }: BillEditorProps) {
             <button
               onClick={() => deleteItem(item.id)}
               aria-label={`Delete ${item.name}`}
-              className="col-start-2 row-start-1 sm:col-start-5 sm:row-start-auto justify-self-end self-start sm:self-center w-9 h-9 sm:w-8 sm:h-8 flex items-center justify-center text-gray-400 hover:text-red-500 hover:bg-red-50 rounded transition-colors"
+              className="col-start-2 row-start-1 flex h-9 w-9 items-center justify-center justify-self-end rounded text-[#77776c] transition-colors hover:bg-[#ffe8e8] hover:text-[#b42318] sm:col-start-5 sm:row-start-auto sm:h-8 sm:w-8 sm:self-center"
             >
               <Trash2 className="w-4 h-4" />
             </button>
@@ -164,7 +165,7 @@ export default function BillEditor({ receipt, onUpdate }: BillEditorProps) {
 
         <button
           onClick={addItem}
-          className="w-full flex items-center justify-center gap-2 p-3 border-2 border-dashed border-gray-300 rounded-lg text-gray-500 hover:border-blue-400 hover:text-blue-500 transition-colors"
+          className="flex w-full items-center justify-center gap-2 rounded-lg border-2 border-dashed border-[#d8d8ce] p-3 font-semibold text-[#5d5d53] transition-colors hover:border-[#171717] hover:text-[#171717]"
         >
           <Plus className="w-4 h-4" />
           Add Item
@@ -172,65 +173,65 @@ export default function BillEditor({ receipt, onUpdate }: BillEditorProps) {
       </div>
 
       {/* Totals Section */}
-      <div className="border-t pt-4 space-y-3">
+      <div className="space-y-3 border-t border-[#e3e3d8] pt-4">
         <div className="flex justify-between items-center">
-          <span className="text-gray-600">Subtotal</span>
+          <span className="text-[#5d5d53]">Subtotal</span>
           <span className="font-medium">{formatCurrency(receipt.subtotal)}</span>
         </div>
 
         <div className="flex justify-between items-center">
-          <span className="text-gray-600">Tax / MwSt</span>
+          <span className="text-[#5d5d53]">Tax / MwSt</span>
           <div className="flex items-center">
-            <span className="text-gray-400 mr-1">CHF</span>
+            <span className="mr-1 text-[#77776c]">CHF</span>
             <input
               type="number"
               value={receipt.tax}
               onChange={(e) => updateReceiptField('tax', e.target.value)}
               step="0.05"
               min="0"
-              className="w-20 text-right border-b border-gray-200 focus:border-blue-500 outline-none"
+              className="w-20 border-b border-[#d8d8ce] text-right outline-none focus:border-[#171717]"
             />
           </div>
         </div>
 
         <div className="flex justify-between items-center">
-          <span className="text-gray-600">Service Fee</span>
+          <span className="text-[#5d5d53]">Service Fee</span>
           <div className="flex items-center">
-            <span className="text-gray-400 mr-1">CHF</span>
+            <span className="mr-1 text-[#77776c]">CHF</span>
             <input
               type="number"
               value={receipt.serviceFee}
               onChange={(e) => updateReceiptField('serviceFee', e.target.value)}
               step="0.05"
               min="0"
-              className="w-20 text-right border-b border-gray-200 focus:border-blue-500 outline-none"
+              className="w-20 border-b border-[#d8d8ce] text-right outline-none focus:border-[#171717]"
             />
           </div>
         </div>
 
         <div className="flex justify-between items-center">
-          <span className="text-gray-600">Tip</span>
+          <span className="text-[#5d5d53]">Tip</span>
           <div className="flex items-center">
-            <span className="text-gray-400 mr-1">CHF</span>
+            <span className="mr-1 text-[#77776c]">CHF</span>
             <input
               type="number"
               value={receipt.tip}
               onChange={(e) => updateReceiptField('tip', e.target.value)}
               step="0.50"
               min="0"
-              className="w-20 text-right border-b border-gray-200 focus:border-blue-500 outline-none"
+              className="w-20 border-b border-[#d8d8ce] text-right outline-none focus:border-[#171717]"
             />
           </div>
         </div>
 
-        <div className="border-t pt-3">
+        <div className="border-t border-[#e3e3d8] pt-3">
           <div className="flex justify-between items-center">
             <span className="text-lg font-bold">Total</span>
             <span className="text-xl font-bold">{formatCurrency(receipt.total)}</span>
           </div>
           {hasMismatch && (
-            <div className="flex items-center gap-2 mt-2 text-yellow-600 text-sm">
-              <AlertTriangle className="w-4 h-4" />
+            <div className="mt-2 flex items-center gap-2 text-sm text-[#b57905]">
+              <AlertTriangle className="h-4 w-4" />
               <span>
                 Calculated total ({formatCurrency(calculatedTotal)}) differs from stated total
               </span>

@@ -3,6 +3,7 @@
 import { useEffect, useState, useRef } from 'react';
 import { Receipt } from '@/types';
 import { Camera, Upload, Loader2, Image as ImageIcon } from 'lucide-react';
+import { ui } from '@/lib/ui';
 
 interface ReceiptScannerProps {
   onScanComplete: (receipt: Receipt) => void;
@@ -110,12 +111,12 @@ export default function ReceiptScanner({ onScanComplete }: ReceiptScannerProps) 
 
       {isScanning ? (
         /* Scanning state */
-        <div className="flex flex-col items-center justify-center p-12 bg-blue-50 rounded-xl">
-          <Loader2 className="w-12 h-12 text-blue-500 animate-spin mb-4" />
-          <p className="text-lg font-medium text-blue-700">Scanning receipt...</p>
-          <p className="text-sm text-blue-500 mt-1">{scanMessage}</p>
-          <p className="text-xs text-blue-400 mt-2">
-            {scanSeconds}s elapsed. First local scan can take 30-60s.
+        <div className={`${ui.panel} flex flex-col items-center justify-center p-8 text-center sm:p-12`}>
+          <Loader2 className="mb-4 h-12 w-12 animate-spin text-[#0f766e]" />
+          <p className="text-lg font-semibold text-[#171717]">Scanning receipt</p>
+          <p className="mt-1 text-sm text-[#5d5d53]">{scanMessage}</p>
+          <p className="mt-2 text-xs text-[#77776c]">
+            {scanSeconds}s elapsed. AI scans usually finish faster than local fallback.
           </p>
           {preview && (
             <img
@@ -130,24 +131,24 @@ export default function ReceiptScanner({ onScanComplete }: ReceiptScannerProps) 
         <div
           onDrop={handleDrop}
           onDragOver={handleDragOver}
-          className="border-2 border-dashed border-gray-300 rounded-xl p-8 transition-colors hover:border-blue-400 hover:bg-blue-50"
+          className="rounded-xl border-2 border-dashed border-[#d8d8ce] bg-white p-6 transition-colors hover:border-[#171717] sm:p-8"
         >
           <div className="flex flex-col items-center">
-            <div className="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mb-4">
-              <ImageIcon className="w-8 h-8 text-gray-400" />
+            <div className="mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-[#f0f5ef]">
+              <ImageIcon className="h-8 w-8 text-[#0f766e]" />
             </div>
 
-            <p className="text-lg font-medium text-gray-700 mb-2">
+            <p className="mb-2 text-lg font-semibold text-[#171717]">
               Upload your receipt
             </p>
-            <p className="text-sm text-gray-500 mb-6">
+            <p className="mb-6 text-sm text-[#5d5d53]">
               Take a photo or upload an image
             </p>
 
-            <div className="flex gap-3">
+            <div className="flex w-full flex-col gap-3 sm:w-auto sm:flex-row">
               <button
                 onClick={() => cameraInputRef.current?.click()}
-                className="flex items-center gap-2 px-6 py-3 bg-blue-600 text-white rounded-lg font-medium hover:bg-blue-700 transition-colors"
+                className={ui.primaryButton}
               >
                 <Camera className="w-5 h-5" />
                 Take Photo
@@ -155,14 +156,14 @@ export default function ReceiptScanner({ onScanComplete }: ReceiptScannerProps) 
 
               <button
                 onClick={() => fileInputRef.current?.click()}
-                className="flex items-center gap-2 px-6 py-3 bg-white border-2 border-gray-300 text-gray-700 rounded-lg font-medium hover:border-blue-400 hover:text-blue-600 transition-colors"
+                className={ui.secondaryButton}
               >
                 <Upload className="w-5 h-5" />
                 Upload File
               </button>
             </div>
 
-            <p className="text-xs text-gray-400 mt-4">
+            <p className="mt-4 text-xs text-[#77776c]">
               Supported formats: JPG, PNG, HEIC
             </p>
           </div>
@@ -171,12 +172,12 @@ export default function ReceiptScanner({ onScanComplete }: ReceiptScannerProps) 
 
       {/* Error message */}
       {error && (
-        <div className="mt-4 p-4 bg-yellow-50 border-2 border-yellow-300 rounded-lg">
+        <div className="mt-4 rounded-lg border border-[#f2d37b] bg-[#fff8df] p-4">
           <div className="flex items-start gap-3">
             <div className="text-2xl">⚠️</div>
             <div className="flex-1">
-              <p className="text-yellow-800 font-medium mb-1">Photo Upload Failed</p>
-              <p className="text-yellow-700 text-sm">{error}</p>
+              <p className="mb-1 font-semibold text-[#5b4213]">Photo Upload Failed</p>
+              <p className="text-sm text-[#6f561f]">{error}</p>
             </div>
           </div>
           <button
@@ -184,7 +185,7 @@ export default function ReceiptScanner({ onScanComplete }: ReceiptScannerProps) 
               setError(null);
               setPreview(null);
             }}
-            className="mt-3 text-sm text-yellow-700 font-medium underline"
+            className="mt-3 text-sm font-semibold text-[#5b4213] underline"
           >
             Dismiss
           </button>

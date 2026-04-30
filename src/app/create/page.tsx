@@ -5,6 +5,7 @@ import Link from 'next/link';
 import { Receipt, PaymentInfo } from '@/types';
 import ReceiptScanner from '@/components/ReceiptScanner';
 import BillEditor from '@/components/BillEditor';
+import { ui } from '@/lib/ui';
 import { ArrowLeft, ArrowRight, Loader2, Share2 } from 'lucide-react';
 import QRCode from 'react-qr-code';
 
@@ -85,11 +86,11 @@ export default function CreatePage() {
       {/* Header */}
       <header className="sticky top-0 z-10 border-b border-[#e3e3d8] bg-white/90 backdrop-blur">
         <div className="mx-auto flex max-w-3xl items-center justify-between px-4 py-3 sm:py-4">
-          <Link href="/" className="flex min-w-0 items-center gap-2 text-sm font-medium text-gray-600 hover:text-gray-900">
+          <Link href="/" className="flex min-w-0 items-center gap-2 text-sm font-semibold text-[#5d5d53] hover:text-[#171717]">
             <ArrowLeft className="w-5 h-5" />
             <span className="hidden sm:inline">Back</span>
           </Link>
-          <h1 className="px-3 text-center text-base font-semibold text-gray-900 sm:text-lg">
+          <h1 className="px-3 text-center text-base font-semibold text-[#171717] sm:text-lg">
             {step === 'scan' && 'Scan Receipt'}
             {step === 'edit' && 'Edit Bill'}
             {step === 'payment' && 'Payment Info'}
@@ -99,9 +100,9 @@ export default function CreatePage() {
         </div>
 
         {/* Progress bar */}
-        <div className="h-1 bg-gray-200">
+        <div className="h-1 bg-[#d8d8ce]">
           <div
-            className="h-full bg-blue-600 transition-all duration-300"
+            className="h-full bg-[#0f766e] transition-all duration-300"
             style={{
               width: step === 'scan' ? '25%' : step === 'edit' ? '50%' : step === 'payment' ? '75%' : '100%',
             }}
@@ -136,7 +137,7 @@ export default function CreatePage() {
                   });
                   setStep('edit');
                 }}
-                className="text-blue-600 hover:underline text-sm"
+                className="text-sm font-semibold text-[#0f766e] hover:underline"
               >
                 Try with demo receipt
               </button>
@@ -163,12 +164,12 @@ export default function CreatePage() {
 
         {/* Step 3: Payment Info */}
         {step === 'payment' && (
-          <div className="rounded-xl bg-white p-4 shadow-lg sm:p-6">
-            <h2 className="text-xl font-semibold text-gray-900 mb-6">Your details</h2>
+          <div className={`${ui.panel} p-4 sm:p-6`}>
+            <h2 className="mb-6 text-xl font-semibold text-[#171717]">Your details</h2>
 
             {/* Payer name */}
             <div className="mb-6">
-              <label className="block text-sm font-medium text-gray-700 mb-2">
+              <label className="mb-2 block text-sm font-semibold text-[#5d5d53]">
                 Your name *
               </label>
               <input
@@ -176,26 +177,26 @@ export default function CreatePage() {
                 value={payerName}
                 onChange={(e) => setPayerName(e.target.value)}
                 placeholder="Enter your name"
-                className="w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none"
+                className={ui.input}
               />
             </div>
 
             {/* Number of people */}
             <div className="mb-6">
-              <label className="block text-sm font-medium text-gray-700 mb-2">
+              <label className="mb-2 block text-sm font-semibold text-[#5d5d53]">
                 Number of people
               </label>
               <div className="flex items-center gap-4">
                 <button
                   onClick={() => setNumberOfPeople(Math.max(2, numberOfPeople - 1))}
-                  className="w-10 h-10 rounded-full border-2 border-gray-300 flex items-center justify-center text-xl font-medium hover:border-blue-500 transition-colors"
+                  className="flex h-10 w-10 items-center justify-center rounded-full border border-[#d8d8ce] bg-white text-xl font-semibold text-[#171717] transition-colors hover:border-[#171717]"
                 >
                   -
                 </button>
-                <span className="text-2xl font-semibold w-8 text-center">{numberOfPeople}</span>
+                <span className="w-8 text-center text-2xl font-semibold text-[#171717]">{numberOfPeople}</span>
                 <button
                   onClick={() => setNumberOfPeople(numberOfPeople + 1)}
-                  className="w-10 h-10 rounded-full border-2 border-gray-300 flex items-center justify-center text-xl font-medium hover:border-blue-500 transition-colors"
+                  className="flex h-10 w-10 items-center justify-center rounded-full border border-[#d8d8ce] bg-white text-xl font-semibold text-[#171717] transition-colors hover:border-[#171717]"
                 >
                   +
                 </button>
@@ -204,7 +205,7 @@ export default function CreatePage() {
 
             {/* Preferred payment method */}
             <div className="mb-6">
-              <label className="block text-sm font-medium text-gray-700 mb-2">
+              <label className="mb-2 block text-sm font-semibold text-[#5d5d53]">
                 Preferred payment method
               </label>
               <div className="grid grid-cols-2 gap-2 sm:gap-3">
@@ -214,8 +215,8 @@ export default function CreatePage() {
                     onClick={() => setPaymentInfo({ ...paymentInfo, preferredMethod: method as PaymentInfo['preferredMethod'] })}
                     className={`rounded-lg border-2 p-3 text-left transition-colors sm:p-4 ${
                       paymentInfo.preferredMethod === method
-                        ? 'border-blue-500 bg-blue-50'
-                        : 'border-gray-200 hover:border-gray-300'
+                        ? 'border-[#0f766e] bg-[#eef7f2] text-[#171717]'
+                        : 'border-[#e3e3d8] bg-white text-[#33332e] hover:border-[#171717]'
                     }`}
                   >
                     <span className="font-medium capitalize">{method}</span>
@@ -227,7 +228,7 @@ export default function CreatePage() {
             {/* Payment details based on method */}
             {paymentInfo.preferredMethod === 'twint' && (
               <div className="mb-6">
-                <label className="block text-sm font-medium text-gray-700 mb-2">
+                <label className="mb-2 block text-sm font-semibold text-[#5d5d53]">
                   TWINT phone number
                 </label>
                 <input
@@ -235,18 +236,18 @@ export default function CreatePage() {
                   value={paymentInfo.twintPhone || ''}
                   onChange={(e) => setPaymentInfo({ ...paymentInfo, twintPhone: e.target.value })}
                   placeholder="+41 79 123 45 67"
-                  className="w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none"
+                  className={ui.input}
                 />
               </div>
             )}
 
             {paymentInfo.preferredMethod === 'revolut' && (
               <div className="mb-6">
-                <label className="block text-sm font-medium text-gray-700 mb-2">
+                <label className="mb-2 block text-sm font-semibold text-[#5d5d53]">
                   Revolut username
                 </label>
                 <div className="flex items-center">
-                  <span className="px-4 py-3 bg-gray-100 border border-r-0 rounded-l-lg text-gray-500">
+                  <span className="rounded-l-lg border border-r-0 border-[#d8d8ce] bg-[#efefe7] px-4 py-3 text-[#5d5d53]">
                     @
                   </span>
                   <input
@@ -254,7 +255,7 @@ export default function CreatePage() {
                     value={paymentInfo.revolutTag || ''}
                     onChange={(e) => setPaymentInfo({ ...paymentInfo, revolutTag: e.target.value })}
                     placeholder="yourname"
-                    className="flex-1 px-4 py-3 border rounded-r-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none"
+                    className="min-w-0 flex-1 rounded-r-lg border border-[#d8d8ce] px-4 py-3 text-[#171717] outline-none focus:border-[#171717]"
                   />
                 </div>
               </div>
@@ -262,7 +263,7 @@ export default function CreatePage() {
 
             {paymentInfo.preferredMethod === 'iban' && (
               <div className="mb-6">
-                <label className="block text-sm font-medium text-gray-700 mb-2">
+                <label className="mb-2 block text-sm font-semibold text-[#5d5d53]">
                   IBAN
                 </label>
                 <input
@@ -270,13 +271,13 @@ export default function CreatePage() {
                   value={paymentInfo.iban || ''}
                   onChange={(e) => setPaymentInfo({ ...paymentInfo, iban: e.target.value })}
                   placeholder="CH93 0076 2011 6238 5295 7"
-                  className="w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none font-mono"
+                  className={`${ui.input} font-mono`}
                 />
               </div>
             )}
 
             {error && (
-              <div className="mb-6 p-4 bg-red-50 border border-red-200 rounded-lg text-red-700">
+              <div className="mb-6 rounded-lg border border-[#fecaca] bg-[#fff1f1] p-4 text-[#b42318]">
                 {error}
               </div>
             )}
@@ -284,7 +285,7 @@ export default function CreatePage() {
             <div className="flex flex-col gap-3 sm:flex-row">
               <button
                 onClick={() => setStep('edit')}
-                className="flex items-center justify-center gap-2 rounded-lg border-2 border-gray-300 px-6 py-3 font-medium transition-colors hover:border-gray-400"
+                className={ui.secondaryButton}
               >
                 <ArrowLeft className="w-5 h-5" />
                 Back
@@ -292,7 +293,7 @@ export default function CreatePage() {
               <button
                 onClick={handleCreateSession}
                 disabled={isCreating || !payerName.trim()}
-                className="flex-1 flex items-center justify-center gap-2 bg-blue-600 text-white px-6 py-3 rounded-lg font-medium hover:bg-blue-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                className={`flex-1 ${ui.primaryButton}`}
               >
                 {isCreating ? (
                   <>
@@ -313,36 +314,36 @@ export default function CreatePage() {
         {/* Step 4: Share */}
         {step === 'share' && shareUrl && (
           <div className="text-center">
-            <div className="mb-6 rounded-xl bg-white p-5 shadow-lg sm:p-8">
-              <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                <svg className="w-8 h-8 text-green-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <div className={`${ui.panel} mb-6 p-5 sm:p-8`}>
+              <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-[#e6f3ee]">
+                <svg className="h-8 w-8 text-[#0f766e]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
                 </svg>
               </div>
 
-              <h2 className="text-2xl font-bold text-gray-900 mb-2">
+              <h2 className="mb-2 text-2xl font-semibold text-[#171717]">
                 Your split link is ready!
               </h2>
-              <p className="text-gray-600 mb-6">
+              <p className="mb-6 text-[#5d5d53]">
                 Share this link with your friends so they can select their items
               </p>
 
               {/* QR Code */}
               <div className="flex justify-center mb-6">
-                <div className="bg-white p-4 rounded-xl shadow-sm border">
+                <div className="rounded-xl border border-[#e3e3d8] bg-white p-4 shadow-sm">
                   <QRCode value={shareUrl} size={180} />
                 </div>
               </div>
 
               {/* Share URL */}
-              <div className="mb-6 rounded-lg bg-gray-50 p-3 sm:p-4">
-                <p className="text-sm text-gray-500 mb-2">Share link:</p>
+              <div className="mb-6 rounded-lg bg-[#fbfbf7] p-3 ring-1 ring-[#e3e3d8] sm:p-4">
+                <p className="mb-2 text-sm font-semibold text-[#5d5d53]">Share link:</p>
                 <div className="flex flex-col gap-2 sm:flex-row">
                   <input
                     type="text"
                     value={shareUrl}
                     readOnly
-                    className="min-w-0 flex-1 rounded-lg border bg-white px-3 py-2 text-sm font-mono sm:px-4"
+                    className="min-w-0 flex-1 rounded-lg border border-[#d8d8ce] bg-white px-3 py-2 font-mono text-sm text-[#171717] sm:px-4"
                   />
                   <button
                     onClick={copyToClipboard}
@@ -363,7 +364,7 @@ export default function CreatePage() {
                       url: shareUrl,
                     });
                   }}
-                  className="w-full flex items-center justify-center gap-2 px-6 py-3 bg-gray-900 text-white rounded-lg font-medium hover:bg-gray-800 transition-colors mb-4"
+                  className={`mb-4 w-full ${ui.primaryButton}`}
                 >
                   <Share2 className="w-5 h-5" />
                   Share with Friends
@@ -372,7 +373,7 @@ export default function CreatePage() {
 
               <Link
                 href={`/dashboard/${sessionId}`}
-                className="w-full flex items-center justify-center gap-2 px-6 py-3 border-2 border-blue-600 text-blue-600 rounded-lg font-medium hover:bg-blue-50 transition-colors"
+                className={`w-full ${ui.secondaryButton}`}
               >
                 Go to Dashboard
                 <ArrowRight className="w-5 h-5" />

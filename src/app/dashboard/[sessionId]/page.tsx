@@ -4,6 +4,7 @@ import { useState, useEffect, use } from 'react';
 import Link from 'next/link';
 import { Session, Participant } from '@/types';
 import { formatCurrency, generateSessionSummary, calculateItemClaims } from '@/lib/calculations';
+import { ui } from '@/lib/ui';
 import QRCode from 'react-qr-code';
 import {
   Loader2,
@@ -113,10 +114,10 @@ export default function DashboardPage({ params }: PageProps) {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+      <div className={`${ui.page} flex items-center justify-center`}>
         <div className="text-center">
-          <Loader2 className="w-12 h-12 text-blue-500 animate-spin mx-auto mb-4" />
-          <p className="text-gray-600">Loading dashboard...</p>
+          <Loader2 className="mx-auto mb-4 h-12 w-12 animate-spin text-[#0f766e]" />
+          <p className="text-[#5d5d53]">Loading dashboard...</p>
         </div>
       </div>
     );
@@ -124,16 +125,16 @@ export default function DashboardPage({ params }: PageProps) {
 
   if (error || !session) {
     return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center p-4">
-        <div className="bg-white rounded-xl shadow-lg p-8 max-w-md text-center">
+      <div className={`${ui.page} flex items-center justify-center p-4`}>
+        <div className={`${ui.panel} max-w-md p-8 text-center`}>
           <div className="w-16 h-16 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-4">
             <XCircle className="w-8 h-8 text-red-600" />
           </div>
-          <h2 className="text-xl font-bold text-gray-900 mb-2">Session Not Found</h2>
-          <p className="text-gray-600">{error}</p>
+          <h2 className="mb-2 text-xl font-semibold text-[#171717]">Session Not Found</h2>
+          <p className="text-[#5d5d53]">{error}</p>
           <Link
             href="/create"
-            className="mt-6 inline-block text-blue-600 hover:underline"
+            className="mt-6 inline-block font-semibold text-[#0f766e] hover:underline"
           >
             Create a new split
           </Link>
@@ -149,78 +150,78 @@ export default function DashboardPage({ params }: PageProps) {
     switch (status) {
       case 'paid':
       case 'confirmed':
-        return <CheckCircle className="w-5 h-5 text-green-500" />;
+        return <CheckCircle className="h-5 w-5 text-[#0f766e]" />;
       case 'pending':
-        return <Clock className="w-5 h-5 text-yellow-500" />;
+        return <Clock className="h-5 w-5 text-[#b57905]" />;
       default:
-        return <XCircle className="w-5 h-5 text-gray-400" />;
+        return <XCircle className="h-5 w-5 text-[#8a8a80]" />;
     }
   };
 
   const getStatusBadge = (status: string) => {
     switch (status) {
       case 'confirmed':
-        return <span className="px-2 py-1 text-xs font-medium bg-green-100 text-green-700 rounded-full">Confirmed</span>;
+        return <span className="rounded-full bg-[#e6f3ee] px-2 py-1 text-xs font-semibold text-[#0f766e]">Confirmed</span>;
       case 'paid':
-        return <span className="px-2 py-1 text-xs font-medium bg-green-100 text-green-700 rounded-full">Paid</span>;
+        return <span className="rounded-full bg-[#e6f3ee] px-2 py-1 text-xs font-semibold text-[#0f766e]">Paid</span>;
       case 'pending':
-        return <span className="px-2 py-1 text-xs font-medium bg-yellow-100 text-yellow-700 rounded-full">Pending</span>;
+        return <span className="rounded-full bg-[#fff8df] px-2 py-1 text-xs font-semibold text-[#6f561f]">Pending</span>;
       default:
-        return <span className="px-2 py-1 text-xs font-medium bg-gray-100 text-gray-600 rounded-full">Unpaid</span>;
+        return <span className="rounded-full bg-[#efefe7] px-2 py-1 text-xs font-semibold text-[#5d5d53]">Unpaid</span>;
     }
   };
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className={ui.page}>
       {/* Header */}
-      <header className="bg-white border-b sticky top-0 z-10">
-        <div className="max-w-4xl mx-auto px-4 py-4 flex items-center justify-between">
+      <header className={ui.topbar}>
+        <div className="mx-auto flex max-w-4xl items-center justify-between px-4 py-4">
           <div>
-            <h1 className="text-lg font-semibold text-gray-900">{session.restaurantName}</h1>
-            <p className="text-sm text-gray-500">Payer Dashboard</p>
+            <h1 className="text-lg font-semibold text-[#171717]">{session.restaurantName}</h1>
+            <p className="text-sm text-[#5d5d53]">Payer Dashboard</p>
           </div>
           <button
             onClick={() => fetchSession(true)}
             disabled={isRefreshing}
-            className="p-2 text-gray-500 hover:text-gray-700 hover:bg-gray-100 rounded-lg transition-colors"
+            className="rounded-lg p-2 text-[#5d5d53] transition-colors hover:bg-[#efefe7] hover:text-[#171717]"
           >
             <RefreshCw className={`w-5 h-5 ${isRefreshing ? 'animate-spin' : ''}`} />
           </button>
         </div>
       </header>
 
-      <main className="max-w-4xl mx-auto px-4 py-6 space-y-6">
+      <main className="mx-auto max-w-4xl space-y-5 px-3 py-5 sm:px-4 sm:py-6">
         {/* Summary Cards */}
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-          <div className="bg-white rounded-xl shadow-sm p-4">
-            <p className="text-sm text-gray-500 mb-1">Total Bill</p>
-            <p className="text-2xl font-bold text-gray-900">{formatCurrency(session.total)}</p>
+        <div className="grid grid-cols-2 gap-3 md:grid-cols-4 md:gap-4">
+          <div className={`${ui.panel} p-4`}>
+            <p className="mb-1 text-sm text-[#5d5d53]">Total Bill</p>
+            <p className="text-2xl font-semibold text-[#171717]">{formatCurrency(session.total)}</p>
           </div>
-          <div className="bg-white rounded-xl shadow-sm p-4">
-            <p className="text-sm text-gray-500 mb-1">Collected</p>
-            <p className="text-2xl font-bold text-green-600">{formatCurrency(summary.totalPaid)}</p>
+          <div className={`${ui.panel} p-4`}>
+            <p className="mb-1 text-sm text-[#5d5d53]">Collected</p>
+            <p className="text-2xl font-semibold text-[#0f766e]">{formatCurrency(summary.totalPaid)}</p>
           </div>
-          <div className="bg-white rounded-xl shadow-sm p-4">
-            <p className="text-sm text-gray-500 mb-1">Remaining</p>
-            <p className="text-2xl font-bold text-orange-600">{formatCurrency(summary.totalRemaining)}</p>
+          <div className={`${ui.panel} p-4`}>
+            <p className="mb-1 text-sm text-[#5d5d53]">Remaining</p>
+            <p className="text-2xl font-semibold text-[#b45309]">{formatCurrency(summary.totalRemaining)}</p>
           </div>
-          <div className="bg-white rounded-xl shadow-sm p-4">
-            <p className="text-sm text-gray-500 mb-1">Participants</p>
-            <p className="text-2xl font-bold text-blue-600">
+          <div className={`${ui.panel} p-4`}>
+            <p className="mb-1 text-sm text-[#5d5d53]">Participants</p>
+            <p className="text-2xl font-semibold text-[#171717]">
               {summary.paidCount}/{summary.participantCount}
             </p>
           </div>
         </div>
 
         {/* Share Card */}
-        <div className="bg-white rounded-xl shadow-lg p-6">
+        <div className={`${ui.panel} p-5 sm:p-6`}>
           <div className="flex items-start justify-between mb-4">
             <div>
-              <h2 className="text-lg font-semibold text-gray-900 flex items-center gap-2">
+              <h2 className="flex items-center gap-2 text-lg font-semibold text-[#171717]">
                 <Share2 className="w-5 h-5" />
                 Share Link
               </h2>
-              <p className="text-sm text-gray-500 mt-1">
+              <p className="mt-1 text-sm text-[#5d5d53]">
                 Share this with your group to split the bill
               </p>
             </div>
@@ -228,8 +229,8 @@ export default function DashboardPage({ params }: PageProps) {
               onClick={toggleLock}
               className={`flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
                 session.isLocked
-                  ? 'bg-yellow-100 text-yellow-700 hover:bg-yellow-200'
-                  : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                    ? 'bg-[#fff8df] text-[#6f561f] hover:bg-[#f7edc5]'
+                    : 'bg-[#efefe7] text-[#33332e] hover:bg-[#e3e3d8]'
               }`}
             >
               {session.isLocked ? (
@@ -246,22 +247,22 @@ export default function DashboardPage({ params }: PageProps) {
             </button>
           </div>
 
-          <div className="flex flex-col md:flex-row gap-6 items-center">
-            <div className="bg-white p-3 rounded-lg border shadow-sm">
+          <div className="flex flex-col items-center gap-6 md:flex-row">
+            <div className="rounded-lg border border-[#e3e3d8] bg-white p-3 shadow-sm">
               <QRCode value={shareUrl} size={140} />
             </div>
 
             <div className="flex-1 w-full">
-              <div className="flex gap-2 mb-4">
+              <div className="mb-4 flex flex-col gap-2 sm:flex-row">
                 <input
                   type="text"
                   value={shareUrl}
                   readOnly
-                  className="flex-1 px-4 py-2 bg-gray-50 border rounded-lg text-sm font-mono"
+                  className="min-w-0 flex-1 rounded-lg border border-[#d8d8ce] bg-[#fbfbf7] px-3 py-2 font-mono text-sm text-[#171717]"
                 />
                 <button
                   onClick={copyLink}
-                  className="px-4 py-2 bg-blue-600 text-white rounded-lg text-sm font-medium hover:bg-blue-700 transition-colors flex items-center gap-2"
+                  className="flex items-center justify-center gap-2 rounded-lg bg-[#171717] px-4 py-2 text-sm font-semibold text-white transition-colors hover:bg-[#30302b]"
                 >
                   {copied ? <Check className="w-4 h-4" /> : <Copy className="w-4 h-4" />}
                   {copied ? 'Copied!' : 'Copy'}
@@ -277,7 +278,7 @@ export default function DashboardPage({ params }: PageProps) {
                       url: shareUrl,
                     });
                   }}
-                  className="w-full flex items-center justify-center gap-2 px-4 py-2 bg-gray-900 text-white rounded-lg text-sm font-medium hover:bg-gray-800 transition-colors"
+                  className="flex w-full items-center justify-center gap-2 rounded-lg bg-[#171717] px-4 py-2 text-sm font-semibold text-white transition-colors hover:bg-[#30302b]"
                 >
                   <Share2 className="w-4 h-4" />
                   Share with Friends
@@ -288,15 +289,15 @@ export default function DashboardPage({ params }: PageProps) {
         </div>
 
         {/* Participants */}
-        <div className="bg-white rounded-xl shadow-lg p-6">
-          <h2 className="text-lg font-semibold text-gray-900 flex items-center gap-2 mb-4">
+        <div className={`${ui.panel} p-5 sm:p-6`}>
+          <h2 className="mb-4 flex items-center gap-2 text-lg font-semibold text-[#171717]">
             <Users className="w-5 h-5" />
             Participants ({session.participants.length})
           </h2>
 
           {session.participants.length === 0 ? (
-            <div className="text-center py-8 text-gray-500">
-              <Users className="w-12 h-12 mx-auto mb-3 text-gray-300" />
+            <div className="py-8 text-center text-[#5d5d53]">
+              <Users className="mx-auto mb-3 h-12 w-12 text-[#b8b8aa]" />
               <p>No one has joined yet</p>
               <p className="text-sm">Share the link to get started</p>
             </div>
@@ -305,21 +306,21 @@ export default function DashboardPage({ params }: PageProps) {
               {session.participants.map((participant) => (
                 <div
                   key={participant.id}
-                  className="flex items-center gap-4 p-4 bg-gray-50 rounded-lg"
+                  className="grid gap-3 rounded-lg border border-[#e3e3d8] bg-[#fbfbf7] p-4 sm:grid-cols-[auto_1fr_auto_auto] sm:items-center"
                 >
                   <div className="flex-shrink-0">
                     {getStatusIcon(participant.paymentStatus)}
                   </div>
 
                   <div className="flex-1 min-w-0">
-                    <p className="font-medium text-gray-900">{participant.name}</p>
-                    <p className="text-sm text-gray-500">
+                    <p className="font-semibold text-[#171717]">{participant.name}</p>
+                    <p className="text-sm text-[#5d5d53]">
                       {participant.selections.length} items selected
                     </p>
                   </div>
 
                   <div className="text-right">
-                    <p className="font-semibold text-gray-900">
+                    <p className="font-semibold text-[#171717]">
                       {formatCurrency(participant.amountOwed)}
                     </p>
                     {getStatusBadge(participant.paymentStatus)}
@@ -329,7 +330,7 @@ export default function DashboardPage({ params }: PageProps) {
                   <select
                     value={participant.paymentStatus}
                     onChange={(e) => updatePaymentStatus(participant.id, e.target.value as 'unpaid' | 'pending' | 'paid' | 'confirmed')}
-                    className="text-sm border rounded-lg px-2 py-1 bg-white"
+                    className="rounded-lg border border-[#d8d8ce] bg-white px-2 py-1 text-sm text-[#171717]"
                   >
                     <option value="unpaid">Unpaid</option>
                     <option value="pending">Pending</option>
@@ -343,8 +344,8 @@ export default function DashboardPage({ params }: PageProps) {
         </div>
 
         {/* Item Claims */}
-        <div className="bg-white rounded-xl shadow-lg p-6">
-          <h2 className="text-lg font-semibold text-gray-900 flex items-center gap-2 mb-4">
+        <div className={`${ui.panel} p-5 sm:p-6`}>
+          <h2 className="mb-4 flex items-center gap-2 text-lg font-semibold text-[#171717]">
             <Receipt className="w-5 h-5" />
             Item Claims
           </h2>
@@ -357,37 +358,37 @@ export default function DashboardPage({ params }: PageProps) {
               const isOverclaimed = claimPercent > 100;
 
               return (
-                <div key={item.id} className="flex items-center gap-4 p-3 bg-gray-50 rounded-lg">
+                <div key={item.id} className="flex items-center gap-4 rounded-lg border border-[#e3e3d8] bg-[#fbfbf7] p-3">
                   <div className="flex-1">
                     <div className="flex items-center gap-2">
-                      <span className="font-medium text-gray-900">{item.name}</span>
+                      <span className="font-semibold text-[#171717]">{item.name}</span>
                       {isOverclaimed && (
-                        <AlertTriangle className="w-4 h-4 text-yellow-500" />
+                        <AlertTriangle className="h-4 w-4 text-[#b57905]" />
                       )}
                     </div>
                     {claim && claim.claimedBy.length > 0 && (
-                      <p className="text-sm text-gray-500">
+                      <p className="text-sm text-[#5d5d53]">
                         {claim.claimedBy.join(', ')}
                       </p>
                     )}
                   </div>
 
                   <div className="text-right">
-                    <p className="font-medium text-gray-700">{formatCurrency(item.price)}</p>
+                    <p className="font-semibold text-[#33332e]">{formatCurrency(item.price)}</p>
                     <div className="flex items-center gap-2">
-                      <div className="w-20 h-2 bg-gray-200 rounded-full overflow-hidden">
+                      <div className="h-2 w-20 overflow-hidden rounded-full bg-[#d8d8ce]">
                         <div
                           className={`h-full rounded-full transition-all ${
                             isOverclaimed
-                              ? 'bg-yellow-500'
+                              ? 'bg-[#b57905]'
                               : isFullyClaimed
-                              ? 'bg-green-500'
-                              : 'bg-blue-500'
+                              ? 'bg-[#0f766e]'
+                              : 'bg-[#171717]'
                           }`}
                           style={{ width: `${Math.min(claimPercent, 100)}%` }}
                         />
                       </div>
-                      <span className="text-sm text-gray-500 w-12 text-right">
+                      <span className="w-12 text-right text-sm text-[#5d5d53]">
                         {claimPercent}%
                       </span>
                     </div>
@@ -399,13 +400,13 @@ export default function DashboardPage({ params }: PageProps) {
 
           {/* Unclaimed warning */}
           {summary.totalUnclaimed > 0.50 && (
-            <div className="mt-4 p-4 bg-yellow-50 border border-yellow-200 rounded-lg flex items-start gap-3">
-              <AlertTriangle className="w-5 h-5 text-yellow-600 flex-shrink-0 mt-0.5" />
+            <div className="mt-4 flex items-start gap-3 rounded-lg border border-[#f2d37b] bg-[#fff8df] p-4">
+              <AlertTriangle className="mt-0.5 h-5 w-5 flex-shrink-0 text-[#b57905]" />
               <div>
-                <p className="font-medium text-yellow-800">
+                <p className="font-semibold text-[#5b4213]">
                   {formatCurrency(summary.totalUnclaimed)} unclaimed
                 </p>
-                <p className="text-sm text-yellow-700">
+                <p className="text-sm text-[#6f561f]">
                   Some items haven&apos;t been selected yet. You may want to remind participants or split the remaining amount.
                 </p>
               </div>
@@ -414,25 +415,25 @@ export default function DashboardPage({ params }: PageProps) {
         </div>
 
         {/* Fairness Summary */}
-        <div className="bg-white rounded-xl shadow-lg p-6">
-          <h2 className="text-lg font-semibold text-gray-900 mb-4">Fairness Summary</h2>
+        <div className={`${ui.panel} p-5 sm:p-6`}>
+          <h2 className="mb-4 text-lg font-semibold text-[#171717]">Fairness Summary</h2>
 
           <div className="grid grid-cols-2 gap-4 text-sm">
-            <div className="p-3 bg-gray-50 rounded-lg">
-              <p className="text-gray-500">Total bill</p>
+            <div className="rounded-lg bg-[#fbfbf7] p-3 ring-1 ring-[#e3e3d8]">
+              <p className="text-[#5d5d53]">Total bill</p>
               <p className="font-semibold">{formatCurrency(session.total)}</p>
             </div>
-            <div className="p-3 bg-gray-50 rounded-lg">
-              <p className="text-gray-500">Claimed</p>
+            <div className="rounded-lg bg-[#fbfbf7] p-3 ring-1 ring-[#e3e3d8]">
+              <p className="text-[#5d5d53]">Claimed</p>
               <p className="font-semibold">{formatCurrency(summary.totalClaimed)}</p>
             </div>
-            <div className="p-3 bg-gray-50 rounded-lg">
-              <p className="text-gray-500">Tax ({formatCurrency(session.tax)})</p>
-              <p className="font-semibold text-green-600">Split proportionally</p>
+            <div className="rounded-lg bg-[#fbfbf7] p-3 ring-1 ring-[#e3e3d8]">
+              <p className="text-[#5d5d53]">Tax ({formatCurrency(session.tax)})</p>
+              <p className="font-semibold text-[#0f766e]">Split proportionally</p>
             </div>
-            <div className="p-3 bg-gray-50 rounded-lg">
-              <p className="text-gray-500">Tip ({formatCurrency(session.tip)})</p>
-              <p className="font-semibold text-green-600">Split proportionally</p>
+            <div className="rounded-lg bg-[#fbfbf7] p-3 ring-1 ring-[#e3e3d8]">
+              <p className="text-[#5d5d53]">Tip ({formatCurrency(session.tip)})</p>
+              <p className="font-semibold text-[#0f766e]">Split proportionally</p>
             </div>
           </div>
         </div>

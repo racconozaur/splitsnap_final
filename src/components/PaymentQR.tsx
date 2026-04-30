@@ -3,7 +3,8 @@
 import QRCode from 'react-qr-code';
 import { PaymentInfo } from '@/types';
 import { formatCurrency } from '@/lib/calculations';
-import { Smartphone, CreditCard, Banknote } from 'lucide-react';
+import { CreditCard, Banknote } from 'lucide-react';
+import { ui } from '@/lib/ui';
 
 interface PaymentQRProps {
   paymentInfo: PaymentInfo;
@@ -41,24 +42,24 @@ Reason: ${reason}`;
   const preferredMethod = paymentInfo.preferredMethod;
 
   return (
-    <div className="bg-white rounded-xl shadow-lg p-6">
-      <h3 className="text-lg font-semibold text-center mb-4">
+    <div className={`${ui.panel} p-5 sm:p-6`}>
+      <h3 className="mb-4 text-center text-lg font-semibold text-[#171717]">
         Pay {formatCurrency(amount)}
       </h3>
 
       <div className="space-y-6">
         {/* TWINT QR */}
         {(preferredMethod === 'twint' || paymentInfo.twintPhone) && (
-          <div className="border rounded-lg p-4">
+          <div className="rounded-xl border border-[#e3e3d8] bg-[#fbfbf7] p-4">
             <div className="flex items-center gap-2 mb-3">
               <div className="w-8 h-8 bg-black rounded flex items-center justify-center">
                 <span className="text-white text-xs font-bold">T</span>
               </div>
-              <span className="font-semibold">TWINT</span>
+              <span className="font-semibold text-[#171717]">TWINT</span>
             </div>
 
             <div className="flex justify-center mb-4">
-              <div className="bg-white p-3 rounded-lg shadow-sm">
+              <div className="rounded-lg bg-white p-3 shadow-sm">
                 <QRCode
                   value={twintContent}
                   size={160}
@@ -67,21 +68,21 @@ Reason: ${reason}`;
               </div>
             </div>
 
-            <div className="text-center text-sm text-gray-600">
-              <p className="font-medium">{paymentInfo.twintPhone || 'No phone provided'}</p>
-              <p className="text-gray-500 mt-1">Scan to pay via TWINT</p>
+            <div className="text-center text-sm text-[#5d5d53]">
+              <p className="font-semibold text-[#171717]">{paymentInfo.twintPhone || 'No phone provided'}</p>
+              <p className="mt-1 text-[#5d5d53]">Scan to pay via TWINT</p>
             </div>
           </div>
         )}
 
         {/* Revolut QR */}
         {(preferredMethod === 'revolut' || paymentInfo.revolutTag) && (
-          <div className="border rounded-lg p-4">
+          <div className="rounded-xl border border-[#e3e3d8] bg-[#fbfbf7] p-4">
             <div className="flex items-center gap-2 mb-3">
-              <div className="w-8 h-8 bg-blue-600 rounded flex items-center justify-center">
+              <div className="flex h-8 w-8 items-center justify-center rounded bg-[#171717]">
                 <span className="text-white text-xs font-bold">R</span>
               </div>
-              <span className="font-semibold">Revolut</span>
+              <span className="font-semibold text-[#171717]">Revolut</span>
             </div>
 
             <div className="flex justify-center mb-4">
@@ -94,15 +95,15 @@ Reason: ${reason}`;
               </div>
             </div>
 
-            <div className="text-center text-sm text-gray-600">
-              <p className="font-medium">@{paymentInfo.revolutTag || 'No tag provided'}</p>
-              <p className="text-gray-500 mt-1">Scan to pay via Revolut</p>
+            <div className="text-center text-sm text-[#5d5d53]">
+              <p className="font-semibold text-[#171717]">@{paymentInfo.revolutTag || 'No tag provided'}</p>
+              <p className="mt-1 text-[#5d5d53]">Scan to pay via Revolut</p>
               {paymentInfo.revolutTag && (
                 <a
                   href={`https://revolut.me/${paymentInfo.revolutTag}`}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="text-blue-600 hover:underline mt-2 inline-block"
+                  className="mt-2 inline-flex rounded-lg bg-[#171717] px-4 py-2 font-semibold text-white hover:bg-[#30302b]"
                 >
                   Open Revolut Link
                 </a>
@@ -113,17 +114,17 @@ Reason: ${reason}`;
 
         {/* IBAN Info */}
         {(preferredMethod === 'iban' || paymentInfo.iban) && paymentInfo.iban && (
-          <div className="border rounded-lg p-4">
+          <div className="rounded-xl border border-[#e3e3d8] bg-[#fbfbf7] p-4">
             <div className="flex items-center gap-2 mb-3">
-              <CreditCard className="w-5 h-5 text-gray-700" />
-              <span className="font-semibold">Bank Transfer</span>
+              <CreditCard className="h-5 w-5 text-[#33332e]" />
+              <span className="font-semibold text-[#171717]">Bank Transfer</span>
             </div>
 
-            <div className="bg-gray-50 rounded p-3 text-sm font-mono break-all">
+            <div className="break-all rounded bg-white p-3 font-mono text-sm text-[#171717] ring-1 ring-[#e3e3d8]">
               {paymentInfo.iban}
             </div>
 
-            <div className="mt-3 text-sm text-gray-600 space-y-1">
+            <div className="mt-3 space-y-1 text-sm text-[#5d5d53]">
               <p><span className="font-medium">Amount:</span> {formatCurrency(amount)}</p>
               <p><span className="font-medium">Recipient:</span> {payerName}</p>
               <p><span className="font-medium">Reference:</span> {reason}</p>
@@ -133,17 +134,17 @@ Reason: ${reason}`;
 
         {/* Cash Option */}
         {preferredMethod === 'cash' && (
-          <div className="border rounded-lg p-4">
+          <div className="rounded-xl border border-[#e3e3d8] bg-[#fbfbf7] p-4">
             <div className="flex items-center gap-2 mb-3">
-              <Banknote className="w-5 h-5 text-green-600" />
-              <span className="font-semibold">Cash Payment</span>
+              <Banknote className="h-5 w-5 text-[#0f766e]" />
+              <span className="font-semibold text-[#171717]">Cash Payment</span>
             </div>
 
             <div className="text-center py-4">
-              <p className="text-2xl font-bold text-green-600 mb-2">
+              <p className="mb-2 text-2xl font-semibold text-[#0f766e]">
                 {formatCurrency(amount)}
               </p>
-              <p className="text-gray-600">
+              <p className="text-[#5d5d53]">
                 Pay <span className="font-medium">{payerName}</span> in cash
               </p>
             </div>
@@ -151,7 +152,7 @@ Reason: ${reason}`;
         )}
       </div>
 
-      <p className="text-center text-xs text-gray-400 mt-4">
+      <p className="mt-4 text-center text-xs text-[#77776c]">
         Payment reference: {reason}
       </p>
     </div>
