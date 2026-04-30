@@ -1,172 +1,96 @@
 import Link from 'next/link';
-import { Camera, Users, CreditCard, QrCode, ArrowRight } from 'lucide-react';
+import { ArrowRight, Camera, ReceiptText } from 'lucide-react';
 
 export default function Home() {
   return (
-    <div className="min-h-screen bg-gradient-to-b from-blue-50 to-white">
-      {/* Hero Section */}
-      <header className="pt-16 pb-12 px-4">
-        <div className="max-w-4xl mx-auto text-center">
-          <div className="inline-flex items-center gap-2 bg-blue-100 text-blue-700 px-4 py-2 rounded-full text-sm font-medium mb-6">
-            <QrCode className="w-4 h-4" />
-            Scan. Select. Pay.
-          </div>
-
-          <h1 className="text-4xl md:text-6xl font-bold text-gray-900 mb-6">
-            Split bills <span className="text-blue-600">fairly</span>,
-            <br />without the hassle
-          </h1>
-
-          <p className="text-xl text-gray-600 mb-8 max-w-2xl mx-auto">
-            Scan your restaurant receipt, share a link with friends, and let everyone
-            select what they ordered. Fair splits, instant payments.
-          </p>
-
-          <Link
-            href="/create"
-            className="inline-flex items-center gap-2 bg-blue-600 text-white px-8 py-4 rounded-xl text-lg font-semibold hover:bg-blue-700 transition-colors shadow-lg hover:shadow-xl"
-          >
-            <Camera className="w-6 h-6" />
-            Scan a Bill
-            <ArrowRight className="w-5 h-5" />
+    <main className="min-h-screen bg-[#f7f7f2] text-[#171717]">
+      <div className="mx-auto flex min-h-screen w-full max-w-5xl flex-col px-5 py-5 sm:px-8">
+        <nav className="flex items-center justify-between">
+          <Link href="/" className="text-base font-semibold tracking-normal">
+            SplitSnap
           </Link>
-        </div>
-      </header>
-
-      {/* How it works */}
-      <section className="py-16 px-4">
-        <div className="max-w-5xl mx-auto">
-          <h2 className="text-3xl font-bold text-center text-gray-900 mb-12">
-            How it works
-          </h2>
-
-          <div className="grid md:grid-cols-4 gap-8">
-            {/* Step 1 */}
-            <div className="text-center">
-              <div className="w-16 h-16 bg-blue-100 rounded-2xl flex items-center justify-center mx-auto mb-4">
-                <Camera className="w-8 h-8 text-blue-600" />
-              </div>
-              <div className="text-sm text-blue-600 font-medium mb-2">Step 1</div>
-              <h3 className="text-lg font-semibold text-gray-900 mb-2">Scan Receipt</h3>
-              <p className="text-gray-600 text-sm">
-                Take a photo of your bill. Our AI extracts all items automatically.
-              </p>
-            </div>
-
-            {/* Step 2 */}
-            <div className="text-center">
-              <div className="w-16 h-16 bg-green-100 rounded-2xl flex items-center justify-center mx-auto mb-4">
-                <svg className="w-8 h-8 text-green-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
-                </svg>
-              </div>
-              <div className="text-sm text-green-600 font-medium mb-2">Step 2</div>
-              <h3 className="text-lg font-semibold text-gray-900 mb-2">Edit & Share</h3>
-              <p className="text-gray-600 text-sm">
-                Fix any OCR mistakes, add tip, and share the link with your group.
-              </p>
-            </div>
-
-            {/* Step 3 */}
-            <div className="text-center">
-              <div className="w-16 h-16 bg-purple-100 rounded-2xl flex items-center justify-center mx-auto mb-4">
-                <Users className="w-8 h-8 text-purple-600" />
-              </div>
-              <div className="text-sm text-purple-600 font-medium mb-2">Step 3</div>
-              <h3 className="text-lg font-semibold text-gray-900 mb-2">Friends Select</h3>
-              <p className="text-gray-600 text-sm">
-                Everyone picks what they ordered. Shared items? No problem.
-              </p>
-            </div>
-
-            {/* Step 4 */}
-            <div className="text-center">
-              <div className="w-16 h-16 bg-orange-100 rounded-2xl flex items-center justify-center mx-auto mb-4">
-                <CreditCard className="w-8 h-8 text-orange-600" />
-              </div>
-              <div className="text-sm text-orange-600 font-medium mb-2">Step 4</div>
-              <h3 className="text-lg font-semibold text-gray-900 mb-2">Pay Instantly</h3>
-              <p className="text-gray-600 text-sm">
-                Get your exact amount with QR codes for TWINT or Revolut.
-              </p>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* Features */}
-      <section className="py-16 px-4 bg-gray-50">
-        <div className="max-w-4xl mx-auto">
-          <h2 className="text-3xl font-bold text-center text-gray-900 mb-12">
-            Fair splits, every time
-          </h2>
-
-          <div className="grid md:grid-cols-2 gap-6">
-            <div className="bg-white p-6 rounded-xl shadow-sm">
-              <h3 className="text-lg font-semibold text-gray-900 mb-2">
-                Proportional tax & tip
-              </h3>
-              <p className="text-gray-600">
-                Tax and tips are split based on what you ordered, not equally.
-                Order more, pay more of the extras.
-              </p>
-            </div>
-
-            <div className="bg-white p-6 rounded-xl shadow-sm">
-              <h3 className="text-lg font-semibold text-gray-900 mb-2">
-                Share items easily
-              </h3>
-              <p className="text-gray-600">
-                Split a pizza 4 ways? Shared a bottle of wine? Mark items as
-                shared and split them however you want.
-              </p>
-            </div>
-
-            <div className="bg-white p-6 rounded-xl shadow-sm">
-              <h3 className="text-lg font-semibold text-gray-900 mb-2">
-                No app needed
-              </h3>
-              <p className="text-gray-600">
-                Friends just open a link. No downloads, no signups, no friction.
-                Works on any device with a browser.
-              </p>
-            </div>
-
-            <div className="bg-white p-6 rounded-xl shadow-sm">
-              <h3 className="text-lg font-semibold text-gray-900 mb-2">
-                Real-time dashboard
-              </h3>
-              <p className="text-gray-600">
-                See who has selected their items and paid. Track everything in
-                one place until everyone is settled.
-              </p>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* CTA */}
-      <section className="py-16 px-4">
-        <div className="max-w-2xl mx-auto text-center">
-          <h2 className="text-3xl font-bold text-gray-900 mb-6">
-            Ready to split your bill?
-          </h2>
           <Link
-            href="/create"
-            className="inline-flex items-center gap-2 bg-blue-600 text-white px-8 py-4 rounded-xl text-lg font-semibold hover:bg-blue-700 transition-colors shadow-lg"
+            href="/about"
+            className="rounded-full border border-[#d8d8ce] px-4 py-2 text-sm font-medium text-[#4b4b43] transition-colors hover:border-[#171717] hover:text-[#171717]"
           >
-            <Camera className="w-6 h-6" />
-            Get Started
+            About
           </Link>
-        </div>
-      </section>
+        </nav>
 
-      {/* Footer */}
-      <footer className="py-8 px-4 border-t">
-        <div className="max-w-4xl mx-auto text-center text-gray-500 text-sm">
-          <p>SplitSnap - Built for IBM Hackathon 2025</p>
-        </div>
-      </footer>
-    </div>
+        <section className="grid flex-1 items-center gap-10 py-10 md:grid-cols-[1fr_0.9fr] md:py-16">
+          <div>
+            <div className="mb-5 inline-flex items-center gap-2 rounded-full bg-white px-3 py-1.5 text-sm font-medium text-[#4b4b43] shadow-sm ring-1 ring-[#e3e3d8]">
+              <ReceiptText className="h-4 w-4 text-[#0f766e]" />
+              Scan. Select. Pay.
+            </div>
+
+            <h1 className="max-w-2xl text-5xl font-semibold leading-[0.95] tracking-normal text-[#151511] sm:text-6xl md:text-7xl">
+              Split dinner without the group chat math.
+            </h1>
+
+            <p className="mt-5 max-w-xl text-lg leading-7 text-[#5d5d53]">
+              Upload a receipt, review the items, and share one link so everyone pays their exact part.
+            </p>
+
+            <div className="mt-8 flex flex-col gap-3 sm:flex-row">
+              <Link
+                href="/create"
+                className="inline-flex items-center justify-center gap-2 rounded-lg bg-[#171717] px-6 py-4 text-base font-semibold text-white transition-colors hover:bg-[#30302b]"
+              >
+                <Camera className="h-5 w-5" />
+                Scan bill
+                <ArrowRight className="h-5 w-5" />
+              </Link>
+              <Link
+                href="/about"
+                className="inline-flex items-center justify-center rounded-lg border border-[#d8d8ce] bg-white px-6 py-4 text-base font-semibold text-[#33332e] transition-colors hover:border-[#171717]"
+              >
+                How it works
+              </Link>
+            </div>
+          </div>
+
+          <div className="mx-auto w-full max-w-sm md:max-w-md">
+            <div className="rounded-[2rem] bg-[#171717] p-3 shadow-2xl">
+              <div className="rounded-[1.45rem] bg-white p-5">
+                <div className="mb-5 flex items-start justify-between gap-4 border-b border-dashed border-[#d8d8ce] pb-4">
+                  <div>
+                    <p className="text-sm font-semibold text-[#171717]">Demo Restaurant</p>
+                    <p className="mt-1 text-xs text-[#77776c]">4 people · CHF 184.60</p>
+                  </div>
+                  <div className="rounded-full bg-[#e6f3ee] px-3 py-1 text-xs font-semibold text-[#0f766e]">
+                    Live
+                  </div>
+                </div>
+
+                <div className="space-y-3">
+                  {[
+                    ['Margherita Pizza', '18.50'],
+                    ['Coca Cola', '5.00'],
+                    ['House Wine', '35.00'],
+                    ['Caesar Salad', '12.00'],
+                  ].map(([name, price]) => (
+                    <div key={name} className="flex items-center justify-between gap-3 text-sm">
+                      <span className="min-w-0 truncate text-[#33332e]">{name}</span>
+                      <span className="font-medium text-[#171717]">CHF {price}</span>
+                    </div>
+                  ))}
+                </div>
+
+                <div className="mt-5 rounded-xl bg-[#f7f7f2] p-4">
+                  <div className="flex items-center justify-between text-sm">
+                    <span className="text-[#5d5d53]">Your share</span>
+                    <span className="text-xl font-semibold text-[#171717]">CHF 42.30</span>
+                  </div>
+                  <div className="mt-3 h-2 rounded-full bg-[#d8d8ce]">
+                    <div className="h-2 w-2/3 rounded-full bg-[#0f766e]" />
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+      </div>
+    </main>
   );
 }

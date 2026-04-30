@@ -1,18 +1,16 @@
 'use client';
 
 import { useState } from 'react';
-import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { Receipt, PaymentInfo } from '@/types';
 import ReceiptScanner from '@/components/ReceiptScanner';
 import BillEditor from '@/components/BillEditor';
-import { ArrowLeft, ArrowRight, Loader2, QrCode, Share2 } from 'lucide-react';
+import { ArrowLeft, ArrowRight, Loader2, Share2 } from 'lucide-react';
 import QRCode from 'react-qr-code';
 
 type Step = 'scan' | 'edit' | 'payment' | 'share';
 
 export default function CreatePage() {
-  const router = useRouter();
   const [step, setStep] = useState<Step>('scan');
   const [receipt, setReceipt] = useState<Receipt | null>(null);
   const [payerName, setPayerName] = useState('');
@@ -83,21 +81,21 @@ export default function CreatePage() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-[#f7f7f2]">
       {/* Header */}
-      <header className="bg-white border-b sticky top-0 z-10">
-        <div className="max-w-3xl mx-auto px-4 py-4 flex items-center justify-between">
-          <Link href="/" className="flex items-center gap-2 text-gray-600 hover:text-gray-900">
+      <header className="sticky top-0 z-10 border-b border-[#e3e3d8] bg-white/90 backdrop-blur">
+        <div className="mx-auto flex max-w-3xl items-center justify-between px-4 py-3 sm:py-4">
+          <Link href="/" className="flex min-w-0 items-center gap-2 text-sm font-medium text-gray-600 hover:text-gray-900">
             <ArrowLeft className="w-5 h-5" />
-            <span>Back</span>
+            <span className="hidden sm:inline">Back</span>
           </Link>
-          <h1 className="text-lg font-semibold text-gray-900">
+          <h1 className="px-3 text-center text-base font-semibold text-gray-900 sm:text-lg">
             {step === 'scan' && 'Scan Receipt'}
             {step === 'edit' && 'Edit Bill'}
             {step === 'payment' && 'Payment Info'}
             {step === 'share' && 'Share with Friends'}
           </h1>
-          <div className="w-16" />
+          <div className="w-8 sm:w-16" />
         </div>
 
         {/* Progress bar */}
@@ -111,7 +109,7 @@ export default function CreatePage() {
         </div>
       </header>
 
-      <main className="max-w-3xl mx-auto px-4 py-8">
+      <main className="mx-auto max-w-3xl px-3 py-5 sm:px-4 sm:py-8">
         {/* Step 1: Scan */}
         {step === 'scan' && (
           <div>
@@ -151,10 +149,10 @@ export default function CreatePage() {
           <div>
             <BillEditor receipt={receipt} onUpdate={setReceipt} />
 
-            <div className="mt-6 flex justify-end">
+            <div className="mt-6 flex justify-end px-1">
               <button
                 onClick={() => setStep('payment')}
-                className="flex items-center gap-2 bg-blue-600 text-white px-6 py-3 rounded-lg font-medium hover:bg-blue-700 transition-colors"
+                className="flex w-full items-center justify-center gap-2 rounded-lg bg-[#171717] px-6 py-3 font-medium text-white transition-colors hover:bg-[#30302b] sm:w-auto"
               >
                 Continue
                 <ArrowRight className="w-5 h-5" />
@@ -165,7 +163,7 @@ export default function CreatePage() {
 
         {/* Step 3: Payment Info */}
         {step === 'payment' && (
-          <div className="bg-white rounded-xl shadow-lg p-6">
+          <div className="rounded-xl bg-white p-4 shadow-lg sm:p-6">
             <h2 className="text-xl font-semibold text-gray-900 mb-6">Your details</h2>
 
             {/* Payer name */}
@@ -209,12 +207,12 @@ export default function CreatePage() {
               <label className="block text-sm font-medium text-gray-700 mb-2">
                 Preferred payment method
               </label>
-              <div className="grid grid-cols-2 gap-3">
+              <div className="grid grid-cols-2 gap-2 sm:gap-3">
                 {['twint', 'revolut', 'iban', 'cash'].map((method) => (
                   <button
                     key={method}
                     onClick={() => setPaymentInfo({ ...paymentInfo, preferredMethod: method as PaymentInfo['preferredMethod'] })}
-                    className={`p-4 border-2 rounded-lg text-left transition-colors ${
+                    className={`rounded-lg border-2 p-3 text-left transition-colors sm:p-4 ${
                       paymentInfo.preferredMethod === method
                         ? 'border-blue-500 bg-blue-50'
                         : 'border-gray-200 hover:border-gray-300'
@@ -283,10 +281,10 @@ export default function CreatePage() {
               </div>
             )}
 
-            <div className="flex gap-3">
+            <div className="flex flex-col gap-3 sm:flex-row">
               <button
                 onClick={() => setStep('edit')}
-                className="flex items-center gap-2 px-6 py-3 border-2 border-gray-300 rounded-lg font-medium hover:border-gray-400 transition-colors"
+                className="flex items-center justify-center gap-2 rounded-lg border-2 border-gray-300 px-6 py-3 font-medium transition-colors hover:border-gray-400"
               >
                 <ArrowLeft className="w-5 h-5" />
                 Back
@@ -315,7 +313,7 @@ export default function CreatePage() {
         {/* Step 4: Share */}
         {step === 'share' && shareUrl && (
           <div className="text-center">
-            <div className="bg-white rounded-xl shadow-lg p-8 mb-6">
+            <div className="mb-6 rounded-xl bg-white p-5 shadow-lg sm:p-8">
               <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
                 <svg className="w-8 h-8 text-green-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
@@ -337,18 +335,18 @@ export default function CreatePage() {
               </div>
 
               {/* Share URL */}
-              <div className="bg-gray-50 rounded-lg p-4 mb-6">
+              <div className="mb-6 rounded-lg bg-gray-50 p-3 sm:p-4">
                 <p className="text-sm text-gray-500 mb-2">Share link:</p>
-                <div className="flex gap-2">
+                <div className="flex flex-col gap-2 sm:flex-row">
                   <input
                     type="text"
                     value={shareUrl}
                     readOnly
-                    className="flex-1 px-4 py-2 bg-white border rounded-lg text-sm font-mono"
+                    className="min-w-0 flex-1 rounded-lg border bg-white px-3 py-2 text-sm font-mono sm:px-4"
                   />
                   <button
                     onClick={copyToClipboard}
-                    className="px-4 py-2 bg-blue-600 text-white rounded-lg text-sm font-medium hover:bg-blue-700 transition-colors"
+                    className="rounded-lg bg-[#171717] px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-[#30302b]"
                   >
                     Copy
                   </button>
